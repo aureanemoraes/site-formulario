@@ -54,13 +54,19 @@ class FormController extends Controller
 
     public function edit($id)
     {
-        //
+        $form = Form::find($id);
+        return view('forms.edit', compact('form'));
     }
 
 
     public function update(Request $request, $id)
     {
-
+        $form = Form::find($id);
+        $form->name = $request->input('name');
+        $form->description = $request->input('description');
+        $form->duration = Carbon::parse($request->input('duration'));
+        $form->save();
+        return redirect('/show-form/' . $form->id);
     }
 
 

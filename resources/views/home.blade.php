@@ -30,8 +30,8 @@
                                 <td>{{ ucfirst($form->name) }}</td>
                                 <td>
                                     <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-info">Ver</a>
-                                    <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
+                                    <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
+                                    <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
                                 </td>
                               </tr>
                             @endforeach

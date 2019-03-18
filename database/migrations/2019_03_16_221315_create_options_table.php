@@ -17,7 +17,7 @@ class CreateOptionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->integer('amount')->default(0);
-            $table->string('slug');
+            $table->string('slug')->nullable();
             $table->bigInteger('question_id')->unsigned();
             $table->foreign('question_id')->references('id')->on('questions');
             $table->softDeletes();

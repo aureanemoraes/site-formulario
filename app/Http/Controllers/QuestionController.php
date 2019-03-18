@@ -41,7 +41,22 @@ class QuestionController extends Controller
 
     public function show($id)
     {
-        return view('questions.show', compact('id'));
+        $question = Question::find($id);
+        $ops = Option::all();
+        $options = \Lava::DataTable();
+        $options->addStringColumn('Opções')
+                ->addNumberColumn('Porcentagem');
+
+        foreach($ops as $op) {
+            if( $op->question_id == $id) {
+                $options->addRow([$op->name, $op->amount]);
+            }
+        }
+        $piechart = \Lava::PieChart($question->name, $options, [
+            'title' => 'Questões respondidas',
+            'is3D' => true
+        ]);
+        return view('questions.show', compact('question', 'piechart'));
     }
 
     public function edit($id)
