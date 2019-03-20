@@ -9,6 +9,7 @@
                 <div class="float-sm-right">
                     <a href="{{'/form/' . $form->id }}" class="btn btn-sm btn-success">Compartilhar Formulário</a>
                 </div>
+                {{var_dump($answers)}}
             </div>
                 <div class="card-body">
                     <table class="table table-hover">
@@ -82,6 +83,7 @@
             </div>
 
             <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+            <input type="hidden" id="type" name="type" value=1>
 
             <button type="submit" class="btn btn-primary">Criar</button>
         </form>
@@ -99,7 +101,30 @@
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
     <div class="card-body">
-        texto
+        <form action="/new-question/save" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="name">Pergunta</label>
+                <textarea class="form-control" name="name" id="name" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descrição</label>
+                <input type="text" class="form-control" name="description" id="description">
+            </div>
+
+            <div class="form-group">
+                <label for="options">Opcões</label>
+                <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
+                <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+            </div>
+
+            <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+
+            <input type="hidden" id="type" name="type" value=2>
+
+            <button type="submit" class="btn btn-primary">Criar</button>
+        </form>
     </div>
     </div>
 </div>
@@ -113,7 +138,24 @@
     </div>
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
     <div class="card-body">
-        texto
+        <form action="/new-question/save" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="name">Pergunta</label>
+                <textarea class="form-control" name="name" id="name" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descrição</label>
+                <input type="text" class="form-control" name="description" id="description">
+            </div>
+
+            <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+
+            <input type="hidden" id="type" name="type" value=3>
+
+            <button type="submit" class="btn btn-primary">Criar</button>
+        </form>
     </div>
     </div>
 </div>

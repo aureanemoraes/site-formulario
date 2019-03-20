@@ -10,6 +10,7 @@ use App\Form;
 use App\Question;
 use App\Option;
 use App\Oqf;
+use App\Answer;
 
 class FormController extends Controller
 {
@@ -46,11 +47,14 @@ class FormController extends Controller
         $form = Form::find($id);
         $oqfs = Oqf::where('form_id', '=', $form->id)->get();
         $i = 0;
+        $j = 0;
         $questions = [];
         $options = [];
+        $answers = [];
 
         foreach($oqfs as $oqf){
             $questions[$i] = Question::find($oqf->question_id);
+            // encontrar as opções
             $options[$i] = Option::find($oqf->option_id);
             $i++;
         }
@@ -61,7 +65,12 @@ class FormController extends Controller
         $options = array_unique($options, SORT_REGULAR);
         $options = (object)$options;
 
-        return view('forms.show', compact('questions', 'options', 'oqfs', 'form'));
+        $answers = array_unique($answers, SORT_REGULAR);
+        $answers = (object)$answers;
+
+
+
+        return view('forms.show', compact('questions', 'options', 'oqfs', 'form', 'answers'));
         //return view('teste', compact('questions', 'options', 'oqfs'));
     }
 

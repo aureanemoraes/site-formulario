@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Question;
 use App\Option;
 use App\Oqf;
+use App\Answer;
 
 class QuestionController extends Controller
 {
@@ -16,38 +17,45 @@ class QuestionController extends Controller
 
     public function store(Request $request) // pronto
     {
+        //$id = $request->input('form_id');
         $question = new Question();
         $question->name = $request->input('name');
+        $question->type = $request->input('type');
         if( $request->input('description') ) {
             $question->description = $request->input('description');
         }
         $question->save();
+        if(($request->input('type') == 1) || ($request->input('type') == 2)) {
+            $options = explode(",", $request->input('options'));
+            foreach ($options as $option => $value) {
+                $slug = $this->criar_slug($value);
+                $optionExists = Option::where('slug', '=', $slug)->first();
+                if( $optionExists == "") {
+                    $option = new Option();
+                    $option->name = $value;
+                    $option->slug = $slug;
+                    $option->save();
 
-        $options = explode(",", $request->input('options'));
-        foreach ($options as $option => $value) {
-            $slug = $this->criar_slug($value);
-            $optionExists = Option::where('slug', '=', $slug)->first();
-            if( $optionExists == "") {
-                $option = new Option();
-                $option->name = $value;
-                $option->slug = $slug;
-                $option->save();
-
-                $oqf = new Oqf();
-                $oqf->option_id = $option->id;
-                $oqf->form_id = $request->input('form_id');
-                $oqf->question_id = $question->id;
-                $oqf->save();
-            } else {
-                $oqf = new Oqf();
-                $oqf->option_id = $optionExists->id;
-                $oqf->form_id = $request->input('form_id');
-                $oqf->question_id = $question->id;
-                $oqf->save();
+                    $oqf = new Oqf();
+                    $oqf->option_id = $option->id;
+                    $oqf->form_id = $request->input('form_id');
+                    $oqf->question_id = $question->id;
+                    $oqf->save();
+                } else {
+                    $oqf = new Oqf();
+                    $oqf->option_id = $optionExists->id;
+                    $oqf->form_id = $request->input('form_id');
+                    $oqf->question_id = $question->id;
+                    $oqf->save();
+                }
             }
-
+        } else {
+            $answer = new Answer();
+            $answer->question_id = $question->id;
+            $answer->save();
         }
-        return redirect('/show-form/' . $oqf->form_id);
+
+        return redirect('/show-form/' . $request->input('form_id'));
     }
 
     public function show($id) // alterar para nova estrutura do db

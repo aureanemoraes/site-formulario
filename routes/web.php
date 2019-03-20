@@ -24,15 +24,17 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware(['auth'])->group( function() {
-
+    //form
     Route::get('/new-form', 'FormController@create');
     Route::post('/new-form', 'FormController@store');
     Route::get('/show-form/{id}', 'FormController@show');
     Route::get('/edit-form/{id}', 'FormController@edit');
     Route::put('/edit-form/{id}', 'FormController@update');
+    // question
     Route::get('/new-question/{id}', 'QuestionController@create');
     Route::post('/new-question/save', 'QuestionController@store');
     Route::get('/show-question/{id}', 'QuestionController@show');
+    // graphic
     Route::get('/show-graphic/{id}', 'GraphicController@show');
     // Routes - todos os usuários de level:0
     Route::middleware(['level:0'])->group( function() {
