@@ -89,4 +89,8 @@ class QuestionController extends Controller
 
     function edit($id) {
     }
+
+    function question_exists($oqf) {
+        // verificar se a questão já existe na base de dados
+    }
 }

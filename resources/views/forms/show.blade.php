@@ -90,12 +90,12 @@
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
                                     <input type="hidden" id="type" name="type" value=1>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <div class="button-group">
                                         <button type="submit" class="btn btn-primary">Criar</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                     </div>
                                 </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,12 +136,12 @@
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
                                     <input type="hidden" id="type" name="type" value=2>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <div class="button-group">
                                         <button type="submit" class="btn btn-primary">Criar</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                     </div>
                                 </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -176,12 +176,13 @@
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
                                     <input type="hidden" id="type" name="type" value=3>
 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <div class="button-group">
                                         <button type="submit" class="btn btn-primary">Criar</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                     </div>
                                 </form>
+                            </div>
+
                         </div>
                     </div>
                 </div>
