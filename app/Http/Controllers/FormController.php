@@ -9,6 +9,7 @@ use Auth;
 use App\Form;
 use App\Question;
 use App\Option;
+use App\Oqf;
 
 class FormController extends Controller
 {
@@ -29,7 +30,9 @@ class FormController extends Controller
         $form = new Form();
         $form->name = $request->input('name');
         $form->description = $request->input('description');
-        $form->duration = Carbon::parse($request->input('duration'));
+        if ($request->input('duration') ) {
+            $form->duration = Carbon::parse($request->input('duration'));
+        }
         $form->user_id = Auth::user()->id;
         $form->save();
         $id = $form->id;
@@ -41,14 +44,25 @@ class FormController extends Controller
     public function show($id)
     {
         $form = Form::find($id);
-        $questions = Question::where('form_id', '=', $form->id)->get();
-        $options = Option::all();
-        //$result = [];
-        //foreach ($questions as $question) {
-        //    $getOptions = Option::where('question_id', '=', $question->id)->get();
-        //}
+        $oqfs = Oqf::where('form_id', '=', $form->id)->get();
+        $i = 0;
+        $questions = [];
+        $options = [];
 
-        return view('forms.show', compact('form', 'questions', 'options'));
+        foreach($oqfs as $oqf){
+            $questions[$i] = Question::find($oqf->question_id);
+            $options[$i] = Option::find($oqf->option_id);
+            $i++;
+        }
+
+        $questions = array_unique($questions, SORT_REGULAR);
+        $questions = (object)$questions;
+
+        $options = array_unique($options, SORT_REGULAR);
+        $options = (object)$options;
+
+        return view('forms.show', compact('questions', 'options', 'oqfs', 'form'));
+        //return view('teste', compact('questions', 'options', 'oqfs'));
     }
 
 

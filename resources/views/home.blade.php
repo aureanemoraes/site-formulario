@@ -24,17 +24,24 @@
                             </thead>
 
                             <tbody>
-                            @foreach ($forms as $form)
-                              <tr>
-                                <td>{{$form->id}}</td>
-                                <td>{{ ucfirst($form->name) }}</td>
-                                <td>
-                                    <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-info">Ver</a>
-                                    <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
-                                </td>
-                              </tr>
-                            @endforeach
+                            @if(isset($forms))
+                                @foreach ($forms as $form)
+                                <tr>
+                                    <td>{{$form->id}}</td>
+                                    <td>{{ ucfirst($form->name) }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-info">Ver</a>
+                                            <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
+                                            <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @else
+                            <h5>Nenhum formulário adicionado.</h5>
+                            @endif
+
                             </tbody>
                           </table>
                 </div>

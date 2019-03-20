@@ -11,30 +11,116 @@
                 </div>
             </div>
                 <div class="card-body">
-                    @if(isset($questions) && isset($options))
-                    <form action="" method="">
-                        @foreach($questions as $question)
-                            <p>{{$question->name}}</p>
-                            @foreach($options as $option)
-                                @if($option->question_id == $question->id)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="op" id="op" value="{{ $option->name }}">
-                                        <label class="form-check-label" for="exampleRadios1">
-                                            {{$option->name}}
-                                        </label>
-                                    </div>
-                                    @endif
-                            @endforeach
-                        @endforeach
-                    </form>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Perguntas</th>
+                                <th scope="col">Respostas</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($questions) && isset($options) && isset($oqfs))
+                                @foreach($questions as $question)
+                                <tr scope="row">
+                                        <td>{{$question->name}}</td>
+                                        <td>
+                                    @foreach($oqfs as $oqf)
+                                        <ul class="list-group">
+                                        @foreach($options as $option)
+                                            @if(($option->id == $oqf->option_id) && ($question->id == $oqf->question_id))
+                                                        <li class="list-group-item list-group-item-action">{{$option->name}}</li>
+                                                @endif
+                                        @endforeach
+                                        </ul>
+                                    @endforeach
+                                </td>
+                                <td>
+                                        <div class="btn-group">
+                                        <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
+                                        </div>
+                                </td>
+                                </tr>
+                                @endforeach
+                        </tbody>
 
                     @else
-                        <p>Não tem questões</p>
-
+                        <p>Este formulário não possui questões adicionadas.</p>
                     @endif
-                    <a href="{{ '/new-question/' . $form->id }}" class="btn btn-primary">Adicionar questão</a>
+                    </table>
                 </div>
+<div id="accordion">
+<div class="card">
+    <div  id="headingOne">
+    <h5 class="mb-0">
+        <button class="btn btn-primary btn-lg btn-block" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Resposta Única
+        </button>
+    </h5>
+    </div>
 
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+    <div class="card-body">
+
+        <form action="/new-question/save" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="name">Pergunta</label>
+                <textarea class="form-control" name="name" id="name" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Descrição</label>
+                <input type="text" class="form-control" name="description" id="description">
+            </div>
+
+            <div class="form-group">
+                <label for="options">Opcões</label>
+                <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
+                <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+            </div>
+
+            <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+
+            <button type="submit" class="btn btn-primary">Criar</button>
+        </form>
+
+    </div>
+    </div>
+</div>
+<div class="card">
+    <div id="headingTwo">
+    <h5 class="mb-0">
+        <button class="btn btn-info btn-lg btn-block" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Múltiplas Respostas
+        </button>
+    </h5>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+    <div class="card-body">
+        texto
+    </div>
+    </div>
+</div>
+<div class="card">
+    <div id="headingThree">
+    <h5 class="mb-0">
+        <button class="btn btn-secondary btn-lg btn-block" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Subjetiva
+        </button>
+    </h5>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+    <div class="card-body">
+        texto
+    </div>
+    </div>
+</div>
+</div>
+
+
+                </div>
             </div>
         </div>
     </div>

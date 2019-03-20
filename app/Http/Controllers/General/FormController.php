@@ -37,7 +37,7 @@ class FormController extends Controller
         $name= "op";
         for ($i=0; $i <= $count-2; $i++){
             $option = Option::find($request->input($name . $i));
-            $option->amount += 1;
+            $option->amount ++;
             $option->save();
         }
         return view('teste', compact('count'));

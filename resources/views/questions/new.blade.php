@@ -5,6 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
+                @if(isset($id))
                 <div class="card-header">Nova Questão</div>
                 <div class="card-body">
                     <form action="/new-question/save" method="POST">
@@ -30,6 +31,10 @@
                         <button type="submit" class="btn btn-primary">Criar</button>
                     </form>
                 </div>
+                @else
+                    <h5>Esta ação não pode ser realizada.</h5>
+                @endif
+
             </div>
         </div>
     </div>

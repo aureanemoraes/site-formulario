@@ -16,25 +16,19 @@
                         @foreach($questions as $question)
                             <div class="form-group">
                                 <label>{{$question->name}}</label>
-
                             @foreach($options as $option)
                                 @if($option->question_id == $question->id)
                                     <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="{{$name . $i}}" value="{{$option->id}}">
+                                    <input class="form-check-input" type="radio" name="{{$name . $i}}" value="{{$option->id}}" required>
                                         <label class="form-check-label" for="{{$name . $i}}">
-                                            {{$option->name}} {{ $name . $i }}
+                                            {{$option->name}}
                                         </label>
                                     </div>
                                     @endif
-
                             @endforeach
-
                             </div>
-                            <p>Valor de $i = {{ $i }} </p>
                             @php ($i++)
-                            <p>Valor de $i = {{ $i }} </p>
                         @endforeach
-                        <p>Valor de $i = {{ $i }} </p>
                         <button type="submit" class="btn btn-primary">Enviar</button>
                     </form>
 

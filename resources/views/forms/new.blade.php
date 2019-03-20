@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Novo Formulário</div>
                 <div class="card-body">
-                    <form action="new-form" method="POST">
+                    <form action="/new-form" method="POST">
                         @csrf
                         <div class="form-group">
                             <label for="name">Título</label>

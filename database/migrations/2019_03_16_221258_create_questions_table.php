@@ -18,9 +18,6 @@ class CreateQuestionsTable extends Migration
             $table->string('name');
             $table->integer('amount')->default(0);
             $table->text('description')->nullable();
-            $table->bigInteger('form_id')->unsigned();
-            $table->foreign('form_id')->references('id')->on('forms');
-            $table->softDeletes();
             $table->timestamps();
         });
     }
