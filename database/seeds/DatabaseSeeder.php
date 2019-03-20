@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             QuestionsSeeder::class,
             OptionsSeeder::class,
             OqfsSeeder::class,
+            AqfsSeeder::class
         ]);
 
     }

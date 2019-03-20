@@ -11,6 +11,7 @@ use App\Question;
 use App\Option;
 use App\Oqf;
 use App\Answer;
+use App\Aqf;
 
 class FormController extends Controller
 {
@@ -59,18 +60,21 @@ class FormController extends Controller
             $i++;
         }
 
+
+        // encontrar questões subjetivas
+        $aqfs = Aqf::where('form_id', '=', $form->id)->get();
+        foreach($aqfs as $aqf){
+            $questions[$i] = Question::find($aqf->question_id);
+            $i++;
+        }
+
         $questions = array_unique($questions, SORT_REGULAR);
         $questions = (object)$questions;
 
         $options = array_unique($options, SORT_REGULAR);
         $options = (object)$options;
 
-        $answers = array_unique($answers, SORT_REGULAR);
-        $answers = (object)$answers;
-
-
-
-        return view('forms.show', compact('questions', 'options', 'oqfs', 'form', 'answers'));
+        return view('forms.show', compact('questions', 'options', 'oqfs', 'form'));
         //return view('teste', compact('questions', 'options', 'oqfs'));
     }
 

@@ -7,6 +7,7 @@ use App\Question;
 use App\Option;
 use App\Oqf;
 use App\Answer;
+use App\Aqf;
 
 class QuestionController extends Controller
 {
@@ -50,9 +51,10 @@ class QuestionController extends Controller
                 }
             }
         } else {
-            $answer = new Answer();
-            $answer->question_id = $question->id;
-            $answer->save();
+            $aqf = new Aqf();
+            $aqf->question_id = $question->id;
+            $aqf->form_id = $request->input('form_id');
+            $aqf->save();
         }
 
         return redirect('/show-form/' . $request->input('form_id'));

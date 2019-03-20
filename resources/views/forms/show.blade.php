@@ -9,7 +9,6 @@
                 <div class="float-sm-right">
                     <a href="{{'/form/' . $form->id }}" class="btn btn-sm btn-success">Compartilhar Formulário</a>
                 </div>
-                {{var_dump($answers)}}
             </div>
                 <div class="card-body">
                     <table class="table table-hover">
@@ -26,6 +25,9 @@
                                 <tr scope="row">
                                         <td>{{$question->name}}</td>
                                         <td>
+                                    @if($question->type == 3)
+                                        <p>Discursiva.</p>
+                                    @else
                                     @foreach($oqfs as $oqf)
                                         <ul class="list-group">
                                         @foreach($options as $option)
@@ -35,6 +37,7 @@
                                         @endforeach
                                         </ul>
                                     @endforeach
+                                    @endif
                                 </td>
                                 <td>
                                         <div class="btn-group">

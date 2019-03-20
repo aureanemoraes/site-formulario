@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class aqf extends Model
+class Aqf extends Model
 {
     //
 }
