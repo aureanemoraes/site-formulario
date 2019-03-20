@@ -54,120 +54,141 @@
                     @endif
                     </table>
                 </div>
-<div id="accordion">
-<div class="card">
-    <div  id="headingOne">
-    <h5 class="mb-0">
-        <button class="btn btn-primary btn-lg btn-block" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-        Resposta Única
-        </button>
-    </h5>
-    </div>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#oneanswer">
+                        Resposta Única
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="oneanswer" tabindex="-1" role="dialog" aria-labelledby="oneanswerTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="oneanswerTitle">Resposta Única</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/new-question/save" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="name">Pergunta</label>
+                                        <textarea class="form-control" name="name" id="name" required></textarea>
+                                    </div>
 
-    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-    <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="description">Descrição</label>
+                                        <input type="text" class="form-control" name="description" id="description">
+                                    </div>
 
-        <form action="/new-question/save" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="name">Pergunta</label>
-                <textarea class="form-control" name="name" id="name" required></textarea>
-            </div>
+                                    <div class="form-group">
+                                        <label for="options">Opcões</label>
+                                        <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
+                                        <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+                                    </div>
 
-            <div class="form-group">
-                <label for="description">Descrição</label>
-                <input type="text" class="form-control" name="description" id="description">
-            </div>
+                                    <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+                                    <input type="hidden" id="type" name="type" value=1>
 
-            <div class="form-group">
-                <label for="options">Opcões</label>
-                <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
-                <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
-            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Criar</button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
 
-            <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
-            <input type="hidden" id="type" name="type" value=1>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#multipleanswer">
+                        Múltiplas Respostas
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="multipleanswer" tabindex="-1" role="dialog" aria-labelledby="multipleanswerTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="multipleanswerTitle">Resposta Única</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/new-question/save" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="name">Pergunta</label>
+                                        <textarea class="form-control" name="name" id="name" required></textarea>
+                                    </div>
 
-            <button type="submit" class="btn btn-primary">Criar</button>
-        </form>
+                                    <div class="form-group">
+                                        <label for="description">Descrição</label>
+                                        <input type="text" class="form-control" name="description" id="description">
+                                    </div>
 
-    </div>
-    </div>
-</div>
-<div class="card">
-    <div id="headingTwo">
-    <h5 class="mb-0">
-        <button class="btn btn-info btn-lg btn-block" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Múltiplas Respostas
-        </button>
-    </h5>
-    </div>
-    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-    <div class="card-body">
-        <form action="/new-question/save" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="name">Pergunta</label>
-                <textarea class="form-control" name="name" id="name" required></textarea>
-            </div>
+                                    <div class="form-group">
+                                        <label for="options">Opcões</label>
+                                        <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
+                                        <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+                                    </div>
 
-            <div class="form-group">
-                <label for="description">Descrição</label>
-                <input type="text" class="form-control" name="description" id="description">
-            </div>
+                                    <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+                                    <input type="hidden" id="type" name="type" value=2>
 
-            <div class="form-group">
-                <label for="options">Opcões</label>
-                <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
-                <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
-            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Criar</button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
 
-            <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#textanswer">
+                        Discursiva
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="textanswer" tabindex="-1" role="dialog" aria-labelledby="textanswerTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="textanswerTitle">Discursiva</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/new-question/save" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="name">Pergunta</label>
+                                        <textarea class="form-control" name="name" id="name" required></textarea>
+                                    </div>
 
-            <input type="hidden" id="type" name="type" value=2>
+                                    <div class="form-group">
+                                        <label for="description">Descrição</label>
+                                        <input type="text" class="form-control" name="description" id="description">
+                                    </div>
 
-            <button type="submit" class="btn btn-primary">Criar</button>
-        </form>
-    </div>
-    </div>
-</div>
-<div class="card">
-    <div id="headingThree">
-    <h5 class="mb-0">
-        <button class="btn btn-secondary btn-lg btn-block" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        Subjetiva
-        </button>
-    </h5>
-    </div>
-    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-    <div class="card-body">
-        <form action="/new-question/save" method="POST">
-            @csrf
-            <div class="form-group">
-                <label for="name">Pergunta</label>
-                <textarea class="form-control" name="name" id="name" required></textarea>
-            </div>
+                                    <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
+                                    <input type="hidden" id="type" name="type" value=3>
 
-            <div class="form-group">
-                <label for="description">Descrição</label>
-                <input type="text" class="form-control" name="description" id="description">
-            </div>
-
-            <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
-
-            <input type="hidden" id="type" name="type" value=3>
-
-            <button type="submit" class="btn btn-primary">Criar</button>
-        </form>
-    </div>
-    </div>
-</div>
-</div>
-
-
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Criar</button>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 @endsection

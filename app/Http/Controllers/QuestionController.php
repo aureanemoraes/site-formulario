@@ -86,4 +86,7 @@ class QuestionController extends Controller
         $substituir = ['a','a','e','e','i','o','o','u','-',''];
         return str_replace($procurar, $substituir, mb_strtolower($name));
     }
+
+    function edit($id) {
+    }
 }
