@@ -60,7 +60,6 @@ class FormController extends Controller
             $i++;
         }
 
-
         // encontrar questões subjetivas
         $aqfs = Aqf::where('form_id', '=', $form->id)->get();
         foreach($aqfs as $aqf){
@@ -68,16 +67,12 @@ class FormController extends Controller
             $i++;
         }
 
-
-        //usort($questions, function($a, $b) { return $b->id - $a->id; }); // organizar array pelo id da questão
-        array_sort($questions, 'created_at', SORT_ASC);
-
         $questions = array_unique($questions, SORT_REGULAR);
+        usort($questions, function($a, $b) { return $a->id - $b->id; }); // organizar array pelo id da questão
+        //array_sort($questions, 'created_at', SORT_ASC);
         $questions = (object)$questions;
 
         //$k = 1;
-
-
 
         $options = array_unique($options, SORT_REGULAR);
         $options = (object)$options;
@@ -109,11 +104,12 @@ class FormController extends Controller
     {
         //
     }
-    function cmp($a, $b)
-{
-    if ($a == $b) {
-    return 0;
+
+    // função auxiliar para organizar array por ordem id
+    function cmp($a, $b) {
+        if ($a == $b) {
+        return 0;
+        }
+        return ($a < $b) ? -1 : 1;
     }
-    return ($a < $b) ? -1 : 1;
-}
 }

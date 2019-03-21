@@ -13,7 +13,7 @@
                 <div class="card-body">
                     @if (session()->has('data'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Opções iguais!</strong> Você adicionou uma questão com duas ou mais opções idênticas. Por favor, edite suas opções.
+                            <strong>Opções iguais!</strong> Você adicionou uma questão com duas ou mais opções idênticas. Por favor, edite suas opções. {{session('data.id')}}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -51,7 +51,7 @@
                                 </td>
                                 <td>
                                         <div class="btn-group">
-                                        <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="{{'/edit-question/' . $question->id}}" class="btn btn-sm btn-warning">Editar</a>
                                         <a href="{{'/show-graphic/question/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
                                         </div>
                                 </td>

@@ -91,9 +91,47 @@ class QuestionController extends Controller
     }
 
     function edit($id) {
+        $question = Question::find($id);
+        $oqfs = Oqf::where('question_id', '=', $question->id)->get();
+        $options = [];
+        $i = 0;
+
+        foreach($oqfs as $oqf) {
+            $options[$i] = Option::find($oqf->option_id);
+            $i++;
+        }
+
+        $options = array_unique($options, SORT_REGULAR);
+        usort($options, function($a, $b) { return $a->id - $b->id; }); // organizar array pelo id da questão
+        $options = (object)$options;
+
+        return view('questions.edit', compact('question', 'options'));
     }
 
-    function question_exists($oqf) {
-        // verificar se a questão já existe na base de dados
+    function update($id, Request $request) { // NÃO FINALIZADO
+        $question = Question::find($id);
+        $question->name = $request->input('name');
+        $question->description = $request->input('description');
+        $question->save();
+
+        if(($request->input('type') == 1) || ($request->input('type') == 2)) {
+            $options = explode(",", $request->input('options'));
+            foreach ($options as $option => $value) {
+                $slug = $this->criar_slug($value);
+                $option = Option::where('slug', '=', $slug);
+                $option->name = $value;
+                $option->slug = $slug;
+                $option->save();
+                }
+            }
+
+    }
+
+    // função auxiliar para organizar array por ordem id
+    function cmp($a, $b) {
+        if ($a == $b) {
+        return 0;
+        }
+        return ($a < $b) ? -1 : 1;
     }
 }

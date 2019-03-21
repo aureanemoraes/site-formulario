@@ -26,8 +26,6 @@
                             <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
                         </div>
 
-                        <input type="hidden" id="form_id" name="form_id" value="{{ $id }}">
-
                         <button type="submit" class="btn btn-primary">Criar</button>
                     </form>
                 </div>

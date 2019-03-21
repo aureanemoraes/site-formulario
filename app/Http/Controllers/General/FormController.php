@@ -45,12 +45,9 @@ class FormController extends Controller
             $i++;
         }
 
-        usort($questions, function($a, $b) { return $b->id - $a->id; }); // organizar array pelo id da questão
-
         $questions = array_unique($questions, SORT_REGULAR);
+        usort($questions, function($a, $b) { return $a->id - $b->id; }); // organizar array pelo id da questão
         $questions = (object)$questions;
-
-
 
         $options = array_unique($options, SORT_REGULAR);
         $options = (object)$options;

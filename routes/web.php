@@ -34,6 +34,9 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/new-question/{id}', 'QuestionController@create');
     Route::post('/new-question/save', 'QuestionController@store');
     Route::get('/show-question/{id}', 'QuestionController@show');
+    Route::get('/edit-question/{id}', 'QuestionController@edit');
+    Route::put('/edit-question/{id}', 'QuestionController@update');
+
     // graphic
     Route::get('/show-graphic/{id}', 'GraphicController@show');
     Route::get('/show-graphic/question/{id}', 'GraphicController@show_question');
