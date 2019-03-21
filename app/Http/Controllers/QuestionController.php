@@ -18,6 +18,8 @@ class QuestionController extends Controller
 
     public function store(Request $request) // pronto
     {
+        $required = "";
+
         //$id = $request->input('form_id');
         $question = new Question();
         $question->name = $request->input('name');
@@ -26,6 +28,11 @@ class QuestionController extends Controller
             $question->description = $request->input('description');
         }
         $question->save();
+
+        // verificando questão obrigatória
+        if($request->input("required") == 1) {
+            $required = $question->id;
+        }
         if(($request->input('type') == 1) || ($request->input('type') == 2)) {
             $options = explode(",", $request->input('options'));
             foreach ($options as $option => $value) {
@@ -43,11 +50,22 @@ class QuestionController extends Controller
                     $oqf->question_id = $question->id;
                     $oqf->save();
                 } else {
-                    $oqf = new Oqf();
-                    $oqf->option_id = $optionExists->id;
-                    $oqf->form_id = $request->input('form_id');
-                    $oqf->question_id = $question->id;
-                    $oqf->save();
+                    // verificando se a primary key da questão já existe
+                    $primaryOqf = Oqf::where('question_id', '=', $question->id)
+                                ->where('option_id', '=', $optionExists->id)
+                                ->get();
+
+                    if($primaryOqf == null) {
+                        $oqf = new Oqf();
+                        $oqf->option_id = $optionExists->id;
+                        $oqf->form_id = $request->input('form_id');
+                        $oqf->question_id = $question->id;
+                        $oqf->save();
+                    } else {
+                        $questions = Question::find($question->id);
+                        $questions->delete();
+                        return redirect('/show-form/' . $request->input('form_id'))->with('data', [$primaryOqf]);
+                    }
                 }
             }
         } else {
@@ -57,27 +75,12 @@ class QuestionController extends Controller
             $aqf->save();
         }
 
-        return redirect('/show-form/' . $request->input('form_id'));
+        return redirect('/show-form/' . $request->input('form_id'), compact('required'));
     }
 
     public function show($id) // alterar para nova estrutura do db
     {
-        $question = Question::find($id);
-        $ops = Option::all();
-        $options = \Lava::DataTable();
-        $options->addStringColumn('Opções')
-                ->addNumberColumn('Porcentagem');
 
-        foreach($ops as $op) {
-            if( $op->question_id == $id) {
-                $options->addRow([$op->name, $op->amount]);
-            }
-        }
-        $piechart = \Lava::PieChart($question->name, $options, [
-            'title' => 'Questões respondidas',
-            'is3D' => true
-        ]);
-        return view('questions.show', compact('question', 'piechart'));
     }
 
     function criar_slug($name) { // pronto

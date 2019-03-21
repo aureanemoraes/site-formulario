@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/show-question/{id}', 'QuestionController@show');
     // graphic
     Route::get('/show-graphic/{id}', 'GraphicController@show');
+    Route::get('/show-graphic/question/{id}', 'GraphicController@show_question');
     // Routes - todos os usuários de level:0
     Route::middleware(['level:0'])->group( function() {
     });

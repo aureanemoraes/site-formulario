@@ -11,9 +11,18 @@
                 </div>
             </div>
                 <div class="card-body">
+                    @if (session()->has('data'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Opções iguais!</strong> Você adicionou uma questão com duas ou mais opções idênticas. Por favor, edite suas opções.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                    @endif
                     <table class="table table-hover">
                         <thead>
                             <tr>
+                                <th scope="col">Código</th>
                                 <th scope="col">Perguntas</th>
                                 <th scope="col">Respostas</th>
                                 <th scope="col">Ações</th>
@@ -23,6 +32,7 @@
                             @if(isset($questions) && isset($options) && isset($oqfs))
                                 @foreach($questions as $question)
                                 <tr scope="row">
+                                        <td>{{$question->id}}</td>
                                         <td>{{$question->name}}</td>
                                         <td>
                                     @if($question->type == 3)
@@ -42,7 +52,7 @@
                                 <td>
                                         <div class="btn-group">
                                         <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
+                                        <a href="{{'/show-graphic/question/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
                                         </div>
                                 </td>
                                 </tr>
@@ -53,7 +63,6 @@
                         <p>Este formulário não possui questões adicionadas.</p>
                     @endif
                     </table>
-                </div>
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#oneanswer">
                         Resposta Única
@@ -87,6 +96,12 @@
                                         <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
                                     </div>
 
+                                    {{--- Verificando se a questão é obrigatória --}}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="required" value=1>
+                                        <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
+                                    </div>
+                                    <br>
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
                                     <input type="hidden" id="type" name="type" value=1>
 
@@ -133,6 +148,12 @@
                                         <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
                                     </div>
 
+                                    {{--- Verificando se a questão é obrigatória --}}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="required" value=1>
+                                        <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
+                                    </div>
+                                    <br>
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
                                     <input type="hidden" id="type" name="type" value=2>
 
@@ -173,6 +194,13 @@
                                         <input type="text" class="form-control" name="description" id="description">
                                     </div>
 
+                                    {{--- Verificando se a questão é obrigatória --}}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="required" value="1">
+                                        <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
+
+                                    </div>
+                                    <br>
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">
                                     <input type="hidden" id="type" name="type" value=3>
 
@@ -187,6 +215,7 @@
                     </div>
                 </div>
                 </div>
+            </div>
             </div>
         </div>
     </div>

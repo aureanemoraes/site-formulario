@@ -35,4 +35,23 @@ class GraphicController extends Controller
         }
         return view('graphics.show', compact('question'));
     }
+
+    public function show_question($id) {
+        $question = Question::find($id);
+        $ops = Option::all();
+        $options = \Lava::DataTable();
+        $options->addStringColumn('Opções')
+                ->addNumberColumn('Porcentagem');
+
+        foreach($ops as $op) {
+            if( $op->question_id == $id) {
+                $options->addRow([$op->name, $op->amount]);
+            }
+        }
+        $piechart = \Lava::PieChart($question->name, $options, [
+            'title' => 'Questões respondidas',
+            'is3D' => true
+        ]);
+        return view('questions.show', compact('question', 'piechart'));
+    }
 }

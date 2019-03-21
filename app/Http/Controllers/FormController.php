@@ -45,7 +45,7 @@ class FormController extends Controller
 
     public function show($id)
     {
-        $form = Form::find($id);
+        $form = Form::find($id); // encontra o fomulário
         $oqfs = Oqf::where('form_id', '=', $form->id)->get();
         $i = 0;
         $j = 0;
@@ -68,8 +68,16 @@ class FormController extends Controller
             $i++;
         }
 
+
+        //usort($questions, function($a, $b) { return $b->id - $a->id; }); // organizar array pelo id da questão
+        array_sort($questions, 'created_at', SORT_ASC);
+
         $questions = array_unique($questions, SORT_REGULAR);
         $questions = (object)$questions;
+
+        //$k = 1;
+
+
 
         $options = array_unique($options, SORT_REGULAR);
         $options = (object)$options;
@@ -101,4 +109,11 @@ class FormController extends Controller
     {
         //
     }
+    function cmp($a, $b)
+{
+    if ($a == $b) {
+    return 0;
+    }
+    return ($a < $b) ? -1 : 1;
+}
 }
