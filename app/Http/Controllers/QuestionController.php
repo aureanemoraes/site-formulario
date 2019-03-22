@@ -110,7 +110,7 @@ class QuestionController extends Controller
 
     function update($id, Request $request) { // NÃO FINALIZADO
         $question = Question::find($id);
-        $form = $this->findForm_id($id, $request->input('type'));
+        $form = $this->findForm_id($id, $question->type);
         $question->name = $request->input('name');
         $question->description = $request->input('description');
         // verificar se o type da question foi modificado
@@ -139,7 +139,7 @@ class QuestionController extends Controller
                 break;
                 case 3:
                     if($request->input('options') != "") {
-                        return redirect('/show-form/' . $form->form_id)->with('data', '1');
+                        return redirect('/edit-question/' . $id)->with('data', '1');
                     }
                     // se a questão for modificada para discursiva, excluir a primary key da tabela oqf e adicionar na tabela aqf FEITO
                     $oqfs = Oqf::where('question_id', '=', $question->id)->get();
@@ -161,7 +161,7 @@ class QuestionController extends Controller
 
         }
         $question->save();
-        return redirect('/show-form/' . $form->form_id);
+        return redirect('/show-form/' . $form);
 
     }
 
@@ -202,10 +202,12 @@ class QuestionController extends Controller
     function findForm_id($question_id, $request_type) {
         if($request_type == 1 || $request_type == 2) {
             $form = Oqf::where('question_id', '=', $question_id)->first();
+            $form_id = $form->form_id;
         } else {
             $form = Aqf::where('question_id', '=', $question_id)->first();
+            $form_id = $form->form_id;
         }
-        return $form;
+        return $form_id;
     }
 
 }

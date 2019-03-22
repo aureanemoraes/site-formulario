@@ -37,7 +37,6 @@ class FormController extends Controller
             $i++;
         }
 
-
         // encontrar questões subjetivas
         $aqfs = Aqf::where('form_id', '=', $form->id)->get();
         foreach($aqfs as $aqf){
@@ -60,11 +59,17 @@ class FormController extends Controller
         $count = count($request->all());
         $name= "op";
         for ($i=0; $i <= $count-2; $i++){
-            $option = Option::find($request->input($name . $i));
-            $option->amount ++;
-            $option->save();
+            if($request->input($name . $i) != "") {
+                if($request->input('type')) { // NÃO TERMINADO
+
+                }
+                $option = Option::find($request->input($name . $i));
+                $option->amount ++;
+                $option->save();
+            }
+
         }
-        return view('teste', compact('count'));
+        return view('teste', compact('count', 'request'));
     }
 
     public function show($id)

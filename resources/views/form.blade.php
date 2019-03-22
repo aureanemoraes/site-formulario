@@ -15,25 +15,28 @@
                             @foreach($questions as $question)
                                     <label>{{$question->name}}</label>
                                 @if($question->type == 3)
-                                <div class="form-group">
-                                    <textarea class="form-control" id="{{$name . $i}}" name="{{$name . $i}}" rows="3"></textarea>
-                                </div>
+                                    <div class="form-group">
+                                        <textarea class="form-control" id="{{$name . $i}}" name="{{$name . $i}}" rows="3">{{$name . $i}}</textarea>
+                                    </div>
+                                    <input name="{{'type' . $i }}" type="hidden" value=3>
                                 @php ($i++)
                                 @else
                                 @foreach($oqfs as $oqf)
+                                <div class="form-check" required>
                                     @foreach($options as $option)
                                         @if(($option->id == $oqf->option_id) && ($question->id == $oqf->question_id))
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="{{$name . $i}}" value="{{$option->id}}" required>
+                                            <input class="form-check-input" type="radio" name="{{$name . $i}}" value="{{$option->id}}" >
                                             <label class="form-check-label" for="{{$name . $i}}">
-                                                {{$option->name}}
+                                                {{$option->name}} {{$name . $i}}
                                             </label>
-                                        </div>
-                                        @php ($i++)
-                                            @endif
+                                        @endif
                                     @endforeach
+                                </div>
+                                <input name="{{'type' . $i }}" type="hidden" value=3>
                                 @endforeach
+                                @php ($i++)
                                 @endif
+
                             @endforeach
                             <button type="submit" class="btn btn-primary">Enviar</button>
                             @endif
