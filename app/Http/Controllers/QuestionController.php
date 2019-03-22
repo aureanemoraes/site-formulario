@@ -110,21 +110,38 @@ class QuestionController extends Controller
 
     function update($id, Request $request) { // NÃO FINALIZADO
         $question = Question::find($id);
+        $form = $this->findForm_id($id, $request->input('type'));
         $question->name = $request->input('name');
         $question->description = $request->input('description');
         // verificar se o type da question foi modificado
         if ($question->type == $request->input('type')) {
             if(($request->input('type') == 1) || ($request->input('type') == 2)) {
                 $this->change_options($id, $request->input('options'));
+                } else {
+                    if($request->input('options') != "") {
+                        return redirect('/edit-question/' . $id)->with('data', '1');
+                    }
                 }
         } else {
             switch ($request->input('type')) {
                 case 1:
                 case 2:
+                // se a questão for modificada de discursiva -> objetiva, excluir primary key da tabela aqf e adicionar primary key na tabela oqf
+                // verificar se a primary key já existiu no trashed, se sim, recuperar a linha
+
+                // verificar a oqf table com o withTrashed
+                // if deleted_at == null
+                // adiciona um novo oqf
+                // se não
+                // restore na linha
+
                     $this->change_options($question->id, $request->input('options'));
                 break;
                 case 3:
-                // se a questão for modificada para discursiva, excluir a primary key da tabela oqf
+                    if($request->input('options') != "") {
+                        return redirect('/show-form/' . $form->form_id)->with('data', '1');
+                    }
+                    // se a questão for modificada para discursiva, excluir a primary key da tabela oqf e adicionar na tabela aqf FEITO
                     $oqfs = Oqf::where('question_id', '=', $question->id)->get();
                     foreach($oqfs as $oqf) {
                         $oqf->where('option_id', '=', $oqf->option_id)
@@ -132,11 +149,20 @@ class QuestionController extends Controller
                         ->where('form_id', '=', $oqf->form_id)
                         ->delete();
                     }
+
+                    $aqf = new Aqf();
+                    $aqf->question_id = $id;
+                    $aqf->form_id = $form->form_id;
+                    $aqf->save();
+
                 break;
             }
             $question->type = $request->input('type');
+
         }
         $question->save();
+        return redirect('/show-form/' . $form->form_id);
+
     }
 
     // função auxiliar para organizar array por ordem id
@@ -171,4 +197,15 @@ class QuestionController extends Controller
             $j++;
             }
     }
+
+    // pegar o form_id
+    function findForm_id($question_id, $request_type) {
+        if($request_type == 1 || $request_type == 2) {
+            $form = Oqf::where('question_id', '=', $question_id)->first();
+        } else {
+            $form = Aqf::where('question_id', '=', $question_id)->first();
+        }
+        return $form;
+    }
+
 }

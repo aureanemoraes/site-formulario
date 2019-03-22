@@ -7,6 +7,12 @@
             <div class="card">
                 <div class="card-header">Editar</div>
                 <div class="card-body">
+                    @if (session()->has('data'))
+                    <div class="alert alert-danger" role="alert">
+                        Campo <strong>Opções</strong> preenchido. Por favor, para utilizar opções mude o tipo da sua questão para <strong>Resposta Única</strong>
+                        ou <strong>Múltiplas Respostas</strong>.
+                    </div>
+                    @endif
                     <form action={{'/edit-question/' . $question->id}} method="POST">
                         @csrf
                         <div class="form-group">
@@ -18,25 +24,25 @@
                             <label for="description">Descrição</label>
                             <input type="text" class="form-control" name="description" value="" id="description">
                         </div>
-
-                        @if($question->type == 3)
-                        @else
-                            @php($op = "")
-                            @php($first = true)
-                            @foreach($options as $option)
-                                @if($first == true)
-                                    @php($op = $option->name)
-                                    @php($first = false)
-                                @else
-                                    @php($op = $op . ', '. $option->name)
-                                @endif
-                            @endforeach
-                            <div class="form-group">
-                                <label for="options">Opcões</label>
-                                <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" value="{{$op}}" required>
-                                <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+                        @php($op = "")
+                        @php($first = true)
+                        @foreach($options as $option)
+                            @if($first == true)
+                                @php($op = $option->name)
+                                @php($first = false)
+                            @else
+                                @php($op = $op . ', '. $option->name)
+                            @endif
+                        @endforeach
+                        <div class="form-group">
+                            <label for="options">Opcões</label>
+                            <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" value="{{$op}}">
+                            <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+                            <div class="alert alert-warning" role="alert">
+                                Se esta for uma questão <strong>discursiva</strong>. Deixar este campo em branco!
                             </div>
-                        @endif
+                        </div>
+
                         {{-- Mudar tipo da questão --}}
                         <div class="form-group">
                             <label for="type">Tipo</label>
