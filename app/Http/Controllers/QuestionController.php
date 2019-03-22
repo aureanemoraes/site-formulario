@@ -40,7 +40,7 @@ class QuestionController extends Controller
                 $optionExists = Option::where('slug', '=', $slug)->first();
                 if( $optionExists == "") {
                     $option = new Option();
-                    $option->name = $value;
+                    $option->name = trim($value);
                     $option->slug = $slug;
                     $option->save();
 
@@ -112,19 +112,31 @@ class QuestionController extends Controller
         $question = Question::find($id);
         $question->name = $request->input('name');
         $question->description = $request->input('description');
-        $question->save();
-
-        if(($request->input('type') == 1) || ($request->input('type') == 2)) {
-            $options = explode(",", $request->input('options'));
-            foreach ($options as $option => $value) {
-                $slug = $this->criar_slug($value);
-                $option = Option::where('slug', '=', $slug);
-                $option->name = $value;
-                $option->slug = $slug;
-                $option->save();
+        // verificar se o type da question foi modificado
+        if ($question->type == $request->input('type')) {
+            if(($request->input('type') == 1) || ($request->input('type') == 2)) {
+                $this->change_options($id, $request->input('options'));
                 }
+        } else {
+            switch ($request->input('type')) {
+                case 1:
+                case 2:
+                    $this->change_options($question->id, $request->input('options'));
+                break;
+                case 3:
+                // se a questão for modificada para discursiva, excluir a primary key da tabela oqf
+                    $oqfs = Oqf::where('question_id', '=', $question->id)->get();
+                    foreach($oqfs as $oqf) {
+                        $oqf->where('option_id', '=', $oqf->option_id)
+                        ->where('question_id', '=', $oqf->question_id)
+                        ->where('form_id', '=', $oqf->form_id)
+                        ->delete();
+                    }
+                break;
             }
-
+            $question->type = $request->input('type');
+        }
+        $question->save();
     }
 
     // função auxiliar para organizar array por ordem id
@@ -133,5 +145,30 @@ class QuestionController extends Controller
         return 0;
         }
         return ($a < $b) ? -1 : 1;
+    }
+
+    function change_options($question_id, $request_options) {
+        $options_id = [];
+        $i = 0;
+        // descobrir o id das opções que serão editadas
+        $oqfs = Oqf::where('question_id', '=', $question_id)->get();
+        foreach ($oqfs as $oqf) {
+            $options_id[$i] = $oqf->option_id; // salvar os ids num array
+            $i++;
+        }
+        $options = explode(",", $request_options);
+        $j = 0;
+        foreach ($options as $option => $value) {
+            $slug = $this->criar_slug($value);
+            $option = Option::find($options_id[$j]); // encontrar as options
+            $option->name = trim($value);
+            $option->slug = $slug;
+            $option->save();
+            // se a opção for modificada, na tabela oqf mudar o amount para 0
+            $oqf = Oqf::where('option_id', '=', $option->id)->first();
+            $oqf->amount_question = 0;
+            $oqf->save();
+            $j++;
+            }
     }
 }

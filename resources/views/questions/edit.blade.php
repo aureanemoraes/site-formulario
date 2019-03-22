@@ -40,7 +40,7 @@
                         {{-- Mudar tipo da questão --}}
                         <div class="form-group">
                             <label for="type">Tipo</label>
-                            <select id="type" class="form-control">
+                            <select name="type" id="type" class="form-control">
                                 @if($question->type == 1)
                                     <option value=1 selected>Resposta Única</option>
                                     <option value=2>Multiplas Respostas</option>
@@ -63,7 +63,7 @@
                             <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
                         </div>
                         <br>
-                        <button type="submit" class="btn btn-primary">Criar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
                     </form>
                 </div>
             </div>
