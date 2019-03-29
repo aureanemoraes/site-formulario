@@ -56,20 +56,57 @@ class FormController extends Controller
 
     public function store(Request $request)
     {
-        $count = count($request->all());
-        $name= "op";
-        for ($i=0; $i <= $count-2; $i++){
-            if($request->input($name . $i) != "") {
-                if($request->input('type')) { // NÃO TERMINADO
+        //$count = count($request->all()); // contando a quantidade de respostas enviadas
+        //$questions = Question::all();
+        $oqfs = Oqf::where('form_id', '=', $request->input('form_id'))->get(); // buscando todas as questões do formulário
+        $aqfs = Aqf::where('form_id', '=', $request->input('form_id'))->get();
+        foreach ($oqfs as $oqf) {
+            if($request->input($oqf->question_id)) {
+                if ($request->input('type_' . $oqf->question_id)) {
 
+                    $oqf->amount_question++; // adiciona +1 na quantidade de resposta dessa questão nesse formulário
+                    $oqf->save();
+                    $option = Option::find($oqf->option_id);
+                    $option->amount++;
+                    $option->save();
+                    $question = Question::find($oqf->question_id);
+                    $question->amount++;
+                    $question->save();
+                }
+            }
+        }
+
+        foreach ($aqfs as $aqf) {
+            if($request->input($aqf->question_id)) {
+                if($request->input('type_' . $aqf->question_id)){
+                    $answer = new Answer();
+                    $answer->description = $request->input($aqf->question_id);
+                    $answer->save();
+                    // $aqfToSave = Aqf::find($aqf->question_id);
+                    $aqf->amount_question++;
+                    $aqf->save();
+                    $question = Question::find($aqf->question_id);
+                    $question->amount++;
+                    $question->save();
+                }
+            }
+        }
+
+
+
+        //$name= "op";
+        /*for ($i=0; $i <= $count-2; $i++){
+            if($request->input($name . $i) != "") {
+                if($request->input('type') == 1 || $request->input('type') == 2) { // NÃO TERMINADO
+                    $oqf = Oqf::find();
                 }
                 $option = Option::find($request->input($name . $i));
                 $option->amount ++;
                 $option->save();
             }
 
-        }
-        return view('teste', compact('count', 'request'));
+        }*/
+        return view('teste', compact('request', 'questions'));
     }
 
     public function show($id)

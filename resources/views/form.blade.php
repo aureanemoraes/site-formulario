@@ -9,35 +9,31 @@
                 <div class="card-body">
                     <form action="/form/save" method="POST">
                         @csrf
-                        @php ($i = 0)
-                        @php ($name = "op")
                             @if(isset($questions) && isset($options) && isset($oqfs))
                             @foreach($questions as $question)
                                     <label>{{$question->name}}</label>
                                 @if($question->type == 3)
                                     <div class="form-group">
-                                        <textarea class="form-control" id="{{$name . $i}}" name="{{$name . $i}}" rows="3">{{$name . $i}}</textarea>
+                                        <textarea class="form-control" id="{{$question->id}}" name="{{$question->id}}" rows="3">{{$question->id}}</textarea>
                                     </div>
-                                    <input name="{{'type' . $i }}" type="hidden" value=3>
-                                @php ($i++)
+                                    <input name="{{'type_' . $question->id}}" type="hidden" value=3>
                                 @else
-                                @foreach($oqfs as $oqf)
-                                <div class="form-check" required>
-                                    @foreach($options as $option)
-                                        @if(($option->id == $oqf->option_id) && ($question->id == $oqf->question_id))
-                                            <input class="form-check-input" type="radio" name="{{$name . $i}}" value="{{$option->id}}" >
-                                            <label class="form-check-label" for="{{$name . $i}}">
-                                                {{$option->name}} {{$name . $i}}
-                                            </label>
-                                        @endif
+                                    @foreach($oqfs as $oqf)
+                                    <div class="form-check" required>
+                                        @foreach($options as $option)
+                                            @if(($option->id == $oqf->option_id) && ($question->id == $oqf->question_id))
+                                                <input class="form-check-input" type="radio" name="{{$question->id}}" value="{{$option->id}}" >
+                                                <label class="form-check-label" for="{{$question->id}}">
+                                                    {{$option->name}} {{$question->id}}
+                                                </label>
+                                            @endif
+                                        @endforeach
+                                    </div>
                                     @endforeach
-                                </div>
-                                <input name="{{'type' . $i }}" type="hidden" value=3>
-                                @endforeach
-                                @php ($i++)
+                                    <input name="{{'type_' . $question->id}}" type="hidden" value=1>
                                 @endif
-
                             @endforeach
+                            <input name="form_id" type="hidden" value={{$form->id}}>
                             <button type="submit" class="btn btn-primary">Enviar</button>
                             @endif
                     </form>
