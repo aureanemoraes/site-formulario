@@ -63,7 +63,6 @@ class FormController extends Controller
         foreach ($oqfs as $oqf) {
             if($request->input($oqf->question_id)) {
                 if ($request->input('type_' . $oqf->question_id)) {
-
                     $oqf->amount_question++; // adiciona +1 na quantidade de resposta dessa questão nesse formulário
                     $oqf->save();
                     $option = Option::find($oqf->option_id);
@@ -81,8 +80,9 @@ class FormController extends Controller
                 if($request->input('type_' . $aqf->question_id)){
                     $answer = new Answer();
                     $answer->description = $request->input($aqf->question_id);
+                    $answer->question_id = $aqf->question_id;
+                    $answer->form_id = $aqf->form_id;
                     $answer->save();
-                    // $aqfToSave = Aqf::find($aqf->question_id);
                     $aqf->amount_question++;
                     $aqf->save();
                     $question = Question::find($aqf->question_id);
@@ -106,7 +106,7 @@ class FormController extends Controller
             }
 
         }*/
-        return view('teste', compact('request', 'questions'));
+        return view('teste');
     }
 
     public function show($id)

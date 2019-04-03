@@ -22,8 +22,6 @@ class CreateOqfsTable extends Migration
             $table->foreign('form_id')->references('id')->on('forms');
             $table->primary(array('option_id', 'question_id', 'form_id'));
             $table->integer('amount_question')->default(0);
-            $table->integer('amount_form')->default(0);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

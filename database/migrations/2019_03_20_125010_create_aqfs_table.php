@@ -19,11 +19,7 @@ class CreateAqfsTable extends Migration
             $table->bigInteger('form_id')->unsigned();
             $table->foreign('form_id')->references('id')->on('forms');
             $table->primary(array('question_id', 'form_id'));
-            $table->bigInteger('answer_id')->unsigned()->nullable();
-            $table->foreign('answer_id')->references('id')->on('answers');
             $table->integer('amount_question')->default(0);
-            $table->integer('amount_form')->default(0);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

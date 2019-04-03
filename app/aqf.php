@@ -11,7 +11,8 @@ class Aqf extends Model
     protected function setKeysForSaveQuery(Builder $query)
     {
         $query
-            ->where('Customer_No', '=', $this->getAttribute('Customer_No'))
-            ->where('Address_Name', '=', $this->getAttribute('Address_Name'));
+            ->where('question_id', '=', $this->getAttribute('question_id'))
+            ->where('form_id', '=', $this->getAttribute('form_id'));
         return $query;
+    }
 }
