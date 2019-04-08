@@ -142,9 +142,9 @@ class QuestionController extends Controller
                             // verificiar se a primary key da oqf que será criada já existe
                             $oqfExists = Oqf::where('option_id', '=', $optionExists->id)
                                             ->where('question_id', '=', $question->id)
-                                            ->where('form_id', '=', $form);
+                                            ->where('form_id', '=', $form)->first();
                             if ($oqfExists != "") {
-                                return redirect('/edit-question/' . $id)->with('data', '3');
+                                return redirect('/edit-question/' . $id)->with('data2', '3');
                             } else {
                                 // criando a nova oqf
                                 $oqf = new Oqf();

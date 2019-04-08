@@ -7,16 +7,16 @@
             <div class="card">
                 <div class="card-header">Editar</div>
                 <div class="card-body">
-                    @if ( session()->has('data') == 1 )
+                    @if ( session()->has('data') == '1' )
                         <div class="alert alert-danger" role="alert">
                             Campo <strong>opções</strong> vazio. Por favor, para utilizar questões discursivas mude o tipo da sua questão para <strong>DISCURSIVA</strong>.
                         </div>
-                    @elseif (session()->has('data') == 2)
+                    @elseif (session()->has('data') == '2')
                         <div class="alert alert-danger" role="alert">
                             Campo <strong>Opções</strong> preenchido. Por favor, para utilizar opções mude o tipo da sua questão para <strong>Resposta Única</strong>
                             ou <strong>Múltiplas Respostas</strong>.
                         </div>
-                    @elseif(session()->has('data') == 3)
+                    @elseif(session()->has('data2') == '3')
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <strong>Opções iguais!</strong> Você adicionou uma questão com duas ou mais opções idênticas. Por favor, edite suas opções. {{session('data.id')}}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
