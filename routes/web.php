@@ -25,11 +25,15 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::middleware(['auth'])->group( function() {
     //form
+    Route::get('/all-forms', 'FormController@showAll');
+    Route::get('/deleted-forms', 'FormController@showDeletedForms');
     Route::get('/new-form', 'FormController@create');
     Route::post('/new-form', 'FormController@store');
     Route::get('/show-form/{id}', 'FormController@show');
     Route::get('/edit-form/{id}', 'FormController@edit');
     Route::put('/edit-form/{id}', 'FormController@update');
+    Route::get('/delete-form/{id}', 'FormController@destroy');
+    Route::get('/active-form/{id}', 'FormController@active');
     // question
     Route::get('/new-question/{id}', 'QuestionController@create');
     Route::post('/new-question/save', 'QuestionController@store');

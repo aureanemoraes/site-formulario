@@ -17,8 +17,8 @@ class CreateFormsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->text('description')->nullable();
+            $table->integer('amount')->default(0);
             $table->softDeletes();
-            $table->timestamp('duration')->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

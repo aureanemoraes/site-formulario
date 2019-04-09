@@ -20,11 +20,6 @@
                             <input type="text" class="form-control" name="description" id="description" value="{{$form->description}}">
                             </div>
 
-                            <div class="form-group">
-                                <label for="duration">Duração</label>
-                            <input type="text" class="form-control" name="duration" id="duration" aria-describedby="durationHelp"  value="{{$form->duration}}" required>
-                                <small id="durationHelp" class="form-text text-muted">Exemplo: 22-02-2019 16:00</small>
-                            </div>
                             <input name="_method" type="hidden" value="PUT">
 
                             <button type="submit" class="btn btn-primary">Salvar</button>

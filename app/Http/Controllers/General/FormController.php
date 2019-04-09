@@ -58,6 +58,10 @@ class FormController extends Controller
     {
         //$count = count($request->all()); // contando a quantidade de respostas enviadas
         //$questions = Question::all();
+        $form = Form::find($request->input('form_id'));
+        $form->amount++;
+        $form->save();
+
         $oqfs = Oqf::where('form_id', '=', $request->input('form_id'))->get(); // buscando todas as questões do formulário
         $aqfs = Aqf::where('form_id', '=', $request->input('form_id'))->get();
         foreach ($oqfs as $oqf) {

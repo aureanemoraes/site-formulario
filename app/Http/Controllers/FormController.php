@@ -102,7 +102,8 @@ class FormController extends Controller
 
     public function destroy($id)
     {
-        //
+        Form::find($id)->delete();
+        return back();
     }
 
     // função auxiliar para organizar array por ordem id
@@ -111,5 +112,36 @@ class FormController extends Controller
         return 0;
         }
         return ($a < $b) ? -1 : 1;
+    }
+
+    public function active($id) {
+        Form::withTrashed()->find($id)->restore();
+        return back();
+    }
+
+    public function showAll() {
+        $allForms = Form::withTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $countAllForms = count($allForms);
+
+        $trashedForms = Form::onlyTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $countTrashedForms = count($trashedForms);
+
+        $forms = Form::where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $countForms = count($forms);
+
+        return view('all_forms', compact('allForms', 'countAllForms', 'countTrashedForms', 'countForms'));
+    }
+
+    public function showDeletedForms() {
+        $allForms = Form::withTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $countAllForms = count($allForms);
+
+        $trashedForms = Form::onlyTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $countTrashedForms = count($trashedForms);
+
+        $forms = Form::where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $countForms = count($forms);
+
+        return view('deleted_forms', compact('trashedForms', 'countTrashedForms', 'countAllForms', 'countForms'));
     }
 }

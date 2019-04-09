@@ -19,12 +19,6 @@
                             <input type="text" class="form-control" name="description" id="description">
                         </div>
 
-                        <div class="form-group">
-                            <label for="duration">Duração</label>
-                            <input type="text" class="form-control" name="duration" id="duration" aria-describedby="durationHelp" required>
-                            <small id="durationHelp" class="form-text text-muted">Exemplo: 22-02-2019 16:00</small>
-                        </div>
-
                         <button type="submit" class="btn btn-primary">Criar</button>
                     </form>
                 </div>

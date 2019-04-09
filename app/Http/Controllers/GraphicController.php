@@ -18,14 +18,19 @@ class GraphicController extends Controller
     {
         // $actualQuestionStart = 0;
         // $actualQuestionEnd = 0;
+        $form = Form::find($id);
         $i= 0;
         $oqfs = Oqf::where('form_id', '=', $id)->get(); // buscando todas as oqf do formulário
         $aqfs = Aqf::where('form_id', '=', $id)->get(); // buscando todas as aqf do formulário
 
-        foreach($oqfs as $oqf) { // buscando todas as opções e questões do formulário
+        foreach($oqfs as $oqf) { // buscando todas as opções e questões (oqf) do formulário
             $questions[$i] = Question::find($oqf->question_id);
             $options[$i] = Option::find($oqf->option_id);
             $i++;
+        }
+
+        foreach($aqfs as $aqf) {
+            $questions[$i] = Question::find($aqf->question_id);
         }
 
         $questions = array_unique($questions, SORT_REGULAR); // removendo valores duplicados do array
@@ -37,25 +42,46 @@ class GraphicController extends Controller
 
         $i = 0;
         foreach($questions as $q) {
-            $graphic[$i] = \Lava::DataTable();
-            $graphic[$i]->addStringColumn('Opções')
-                    ->addNumberColumn('Porcentagem');
-            foreach($oqfs as $oqf ) {
+            if($q->type != 3) {
+                $graphic[$i] = \Lava::DataTable();
+                $graphic[$i]->addStringColumn('Opções')
+                        ->addNumberColumn('Porcentagem');
+                foreach($oqfs as $oqf ) {
 
-                foreach($options as $o) {
-                    if(($oqf->question_id == $q->id) &&($oqf->option_id == $o->id))
-                    $graphic[$i]->addRow([$o->name, $oqf->amount_question]);
+                    foreach($options as $o) {
+                        if(($oqf->question_id == $q->id) &&($oqf->option_id == $o->id))
+                        $graphic[$i]->addRow([$o->name, $oqf->amount_question]);
+                    }
+
+
                 }
+                    $piechart = \Lava::PieChart($q->name, $graphic[$i], [
+                        'title' => $q->name,
+                        'is3D' => false,
+                        'pieSliceText' => 'percentage',
+                        'width' => '500'
+                ]);
+                $i++;
+            } else {
+                $graphic[$i] = \Lava::DataTable();
+                $graphic[$i]->addStringColumn('Opções')
+                        ->addNumberColumn('Porcentagem');
+                foreach($aqfs as $aqf ) {
+                        $notAnswered = $form->amount - $aqf->amount_question;
+                        $graphic[$i]->addRow(['Respondido', $aqf->amount_question]);
+                        $graphic[$i]->addRow(['Não respondido', $notAnswered]);
 
 
+                }
+                    $piechart = \Lava::PieChart($q->name, $graphic[$i], [
+                        'title' => $q->name,
+                        'is3D' => false,
+                        'pieSliceText' => 'value',
+                        'width' => '500'
+                ]);
+                $i++;
             }
-                $piechart = \Lava::PieChart($q->name, $graphic[$i], [
-                    'title' => $q->name,
-                    'is3D' => false,
-                    'pieSliceText' => 'percentage',
-                    'width' => '500'
-            ]);
-            $i++;
+
         }
 
 
