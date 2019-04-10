@@ -25,6 +25,10 @@
                             <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" required>
                             <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
                         </div>
+                        <div class="form-check">
+                            <input name="required" class="form-check-input" type="checkbox" id="required" value="true">
+                            <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
+                        </div>
 
                         <button type="submit" class="btn btn-primary">Criar</button>
                     </form>

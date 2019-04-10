@@ -50,10 +50,11 @@
                                     @endif
                                 </td>
                                 <td>
-                                        <div class="btn-group">
-                                        <a href="{{'/edit-question/' . $question->id}}" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="{{'/show-graphic/question/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
-                                        </div>
+                                    <div class="btn-group">
+                                    <a href="{{'/edit-question/' . $question->id}}" class="btn btn-sm btn-warning">Editar</a>
+                                    <a href="{{'/show-graphic/question/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
+                                    <a href="{{'/delete-question/' . $question->id }}" class="btn btn-sm btn-danger">Excluir</a>
+                                    </div>
                                 </td>
                                 </tr>
                                 @endforeach
@@ -98,7 +99,7 @@
 
                                     {{--- Verificando se a questão é obrigatória --}}
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="required" value=1>
+                                        <input name="required" class="form-check-input" type="checkbox" id="required" value=1 >
                                         <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
                                     </div>
                                     <br>
@@ -150,7 +151,7 @@
 
                                     {{--- Verificando se a questão é obrigatória --}}
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="required" value=1>
+                                        <input name="required" class="form-check-input" type="checkbox" id="required" value=1 >
                                         <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
                                     </div>
                                     <br>
@@ -194,11 +195,10 @@
                                         <input type="text" class="form-control" name="description" id="description">
                                     </div>
 
-                                    {{--- Verificando se a questão é obrigatória --}}
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="required" value="1">
+                                     {{--- Verificando se a questão é obrigatória --}}
+                                     <div class="form-check">
+                                        <input name="required" class="form-check-input" type="checkbox" id="required" value=1 >
                                         <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
-
                                     </div>
                                     <br>
                                     <input type="hidden" id="form_id" name="form_id" value="{{ $form->id }}">

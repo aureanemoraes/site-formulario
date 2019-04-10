@@ -22,17 +22,19 @@ class QuestionController extends Controller
 
         //$id = $request->input('form_id');
         $question = new Question();
-        $question->name = trim($request->input('name'));
+        $question->name = ucfirst(trim($request->input('name')));
         $question->type = $request->input('type');
+        if($request->input('required')) {
+            $question->required = $request->input('required');
+        } else {
+            $question->required = 0;
+        }
+
         if( $request->input('description') ) {
-            $question->description = trim($request->input('description'));
+            $question->description = ucfirst(trim($request->input('description')));
         }
         $question->save();
 
-        // verificando questão obrigatória
-        if($request->input("required") == 1) {
-            $required = $question->id;
-        }
         if(($request->input('type') == 1) || ($request->input('type') == 2)) {
             $options = explode(",", $request->input('options'));
             foreach ($options as $option => $value) {
@@ -40,7 +42,7 @@ class QuestionController extends Controller
                 $optionExists = Option::where('slug', '=', $slug)->first();
                 if( $optionExists == "") {
                     $option = new Option();
-                    $option->name = trim($value);
+                    $option->name = ucfirst(trim($value));
                     $option->slug = $slug;
                     $option->save();
 
@@ -76,9 +78,15 @@ class QuestionController extends Controller
         return redirect('/show-form/' . $request->input('form_id'));
     }
 
-    public function show($id) // alterar para nova estrutura do db
+    public function destroy($id)
     {
+        $question = Question::find($id);
+        if($question->type != 3) {
+            $aqf = Aqf::where('question_id');
+        } else {
 
+        }
+        return back();
     }
 
     function criar_slug($name) { // pronto
@@ -110,188 +118,110 @@ class QuestionController extends Controller
         $question = Question::find($id); // encontrando a question
         $form = $this->findForm_id($id, $question->type); // encontrando o formulário da questão
 
-        if ( $question->name != trim($request->input('name')) ) { // verificando se o NAME da questão foi modificado
+        if ( $question->name != ucfirst(trim($request->input('name'))) ) { // verificando se o NAME da questão foi modificado
             $question->name = $request->input('name'); // modificando o NAME da questão
         }
 
-        if ($question->description != trim($request->input('description')) ) { // verificando se a DESCRIPTION da questão foi modificada
+        if( $question->required != $request->input('required')) { // verificando se a questão mudou o status de obrigatoriedade
+            $question->required = $request->input('required');
+        }
+
+        if ($question->description != ucfirst(trim($request->input('description'))) ) { // verificando se a DESCRIPTION da questão foi modificada
             $question->description = $request->input('description'); // modificando a DESCRIPTION
         }
 
-
-        if ($question->type == $request->input('type')) { // verificando se o TYPE da question foi modificado
+        if ( $question->type == $request->input('type') ) { // verificando se o TYPE da question foi modificado
+            $question->save();
             if(($request->input('type') == 1) || ($request->input('type') == 2)) { // verificando se o TYPE modificado da questão é 1 ou 2
-                if( $request->input('options') == "" ) { // verificando se o campo options está vazio
-                    return redirect('/edit-question/' . $id)->with('data', '1'); // exibindo mensagem de alerta, solicitando o preenchimento.
+                    $result = $this->changeOQF($question->id, $request->input('options'), $form);
+                    switch($result) {
+                        case 1:
+                            return redirect('/edit-question/' . $question->id)->with('data', '1');
+                        break;
+                        case 3:
+                            return redirect('/edit-question/' . $question->id)->with('data_3', '3');
+                        break;
+                        case 0:
+                            return redirect('/show-form/' . $form);
+                        break;
+                    }
+            } else { // se a questão for do tipo 3 (discursiva), somente verificar se o campo opções está preenchido
+                if($request->input('options') != "") {
+                    return redirect('/edit-question/' . $question->id)->with('data_2', '2');
                 } else {
-                    // POSSIVEIS SITUAÇÕES DE MODIFICAÇÕES EM OPÇÕES
-                    // ALTERAR SOMENTE OS VALORES DAS OPÇÕES
-                    // ALTERAR O NÚMERO DAS OPÇÕES: DIMINUIR OU AUMENTAR
-                    // ALTERAR O NÚMERO DAS OPÇÕES E OS VALORES
-                    // OPÇÕES QUE JÁ EXISTEM E NOVAS OPÇÕES
-
-                    // sempre que o usuário utilizar o update, apagar as oqf da tabela e criar novas
-                    // isto soluciona o problema de alteração no número das questões e da possibilidade de
-                    $oqfs = Oqf::where('question_id', '=', $question->id)->delete();
-
-                    $options = explode( ",", $request->input('options') ); // armazenando as opções em um objeto
-                    foreach ($options as $option => $value) {
-                        $slug = $this->criar_slug($value); // criando o slug da option
-                        $optionExists = Option::where('slug', '=', $slug)->first(); // verificando se esta option já existe na tabela Options
-                        if ($optionExists != "") {
-                            // verificiar se a primary key da oqf que será criada já existe
-                            $oqfExists = Oqf::where('option_id', '=', $optionExists->id)
-                                            ->where('question_id', '=', $question->id)
+                    return redirect('/show-form/' . $form);
+                }
+            }
+        } else { // alterações se o type da questão foi modificado
+            switch($request->input('type')) {
+                case 1:
+                case 2:
+                    if($question->type != 3) {
+                        $result = $this->changeOQF($question->id, $request->input('options'), $form);
+                        switch($result) {
+                            case 1:
+                                return redirect('/edit-question/' . $question->id)->with('data', '1');
+                            break;
+                            case 3:
+                                return redirect('/edit-question/' . $question->id)->with('data_3', '3');
+                            break;
+                            case 0:
+                                $question->type = $request->input('type');
+                                $question->save();
+                                return redirect('/show-form/' . $form);
+                            break;
+                        }
+                    } else {
+                        // se a questão for modificada de discursiva -> objetiva, excluir primary key da tabela aqf e adicionar primary key na tabela oqf
+                        $result = $this->changeOQF($question->id, $request->input('options'), $form);
+                        switch($result) {
+                            case 1:
+                                return redirect('/edit-question/' . $question->id)->with('data', '1');
+                            break;
+                            case 3:
+                                $aqf = Aqf::where('question_id', '=', $question->id)
+                                ->where('form_id', '=', $form)->first();
+                                $aqf->delete();
+                                $question->type = $request->input('type');
+                                $question->save();
+                                return redirect('/edit-question/' . $question->id)->with('data_3', '3');
+                            break;
+                            case 0:
+                                $aqf = Aqf::where('question_id', '=', $question->id)
                                             ->where('form_id', '=', $form)->first();
-                            if ($oqfExists != "") {
-                                return redirect('/edit-question/' . $id)->with('data2', '3');
-                            } else {
-                                // criando a nova oqf
-                                $oqf = new Oqf();
-                                $oqf->option_id = $optionExists->id;
-                                $oqf->question_id = $question->id;
-                                $oqf->form_id = $form;
-                                $oqf->save();
-                            }
-                        } else {
-                            // criando a nova option
-                            $newOption = new Option();
-                            $newOption->name = trim($value);
-                            $newOption->slug = $slug;
-                            $newOption->save();
-                            // criando a nova oqf
-                            $oqf = new Oqf();
-                            $oqf->option_id = $newOption->id;
-                            $oqf->question_id = $question->id;
-                            $oqf->form_id = $form;
-                            $oqf->save();
+                                $aqf->delete();
+                                $question->type = $request->input('type');
+                                $question->save();
+                                return redirect('/show-form/' . $form);
+                            break;
+                        }
+                    }
+                break;
+                case 3:
+                    // se a questão for modificada de objetiva para discursiva, excluir as primary key oqfs
+                    // e criar a primary key aqfs
+                    if($request->input('options') != "") {
+                        return redirect('/edit-question/' . $question->id)->with('data_2', '2');
+                    } else {
+                        $oqfs = Oqf::where('question_id', '=', $question->id)
+                        ->where('form_id', '=', $form)->get();
+                        foreach($oqfs as $oqf) {
+                            $oqf->delete();
                         }
 
-                    }
-                }
+                        $question->type = $request->input('type');
+                        $question->save();
 
+                        $aqf = new Aqf();
+                        $aqf->question_id = $question->id;
+                        $aqf->form_id = $form;
+                        $aqf->save();
+                        return redirect('/show-form/' . $form);
+                    }
+                break;
             }
         }
-        return redirect('/show-form/' . $form);
     }
-                //$this->change_options($id, $request->input('options'), $form);
-
-
-        //         $options_id = [];
-        //         $i = 0;
-        //         // descobrir o id das opções que serão editadas
-        //         $oqfs = Oqf::where('question_id', '=', $question->id)->get();
-        //         foreach ($oqfs as $oqf) {
-        //             $options_id[$i] = $oqf->option_id; // salvar os ids num array
-        //             $i++;
-        //         }
-
-        //         // return view('teste', compact('options_id'));
-        //         \Log::info($options_id);
-
-        //         $options = explode(",", $request->input('options'));
-        //         $j = 0;
-        //         foreach ($options as $option => $value) {
-        //             $slug = $this->criar_slug($value);
-        //             $optionExists = Option::where('slug', '=', $slug)->first();
-        //             if( $optionExists == "") {
-        //                 $option = new Option();
-        //                 $option->name = trim($value);
-        //                 $option->slug = $slug;
-        //                 $option->save();
-
-        //                 $oqf = new Oqf();
-        //                 $oqf->option_id = $option->id;
-        //                 $oqf->form_id = $form;
-        //                 $oqf->question_id = $question->id;
-        //                 $oqf->save();
-        //             } else {
-        //                 // verificando se a primary key da questão já existe
-        //                 $primaryOqf = Oqf::where('question_id', '=', $question->id)
-        //                             ->where('option_id', '=', $optionExists->id)
-        //                             ->first();
-
-        //                 if($primaryOqf == "") {
-        //                     $option = Option::find($optionExists->id); // encontrar as options
-        //                     $option->name = trim($value);
-        //                     $option->slug = $slug;
-        //                     $option->save();
-        //                     // se a opção for modificada, na tabela oqf mudar o amount para 0
-        //                     $oqf = new Oqf();
-        //                     $oqf->option_id = $optionExists->id;
-        //                     $oqf->question_id = $question->id;
-        //                     $oqf->form_id = $form;
-        //                     $oqf->save();
-
-
-        //                  } else {
-
-        //                  }
-        //             }
-        //             $j++;
-        //         }
-
-
-
-
-        //         } else {
-        //             if($request->input('options') != "") {
-        //                 return redirect('/edit-question/' . $id)->with('data', '2');
-        //             }
-        //         }
-        //} //else {
-        //     switch ($request->input('type')) {
-        //         case 1:
-        //         case 2:
-        //         // se a questão for modificada de discursiva -> objetiva, excluir primary key da tabela aqf e adicionar primary key na tabela oqf
-        //         // verificar se a primary key já existiu no trashed, se sim, recuperar a linha
-        //             $aqf = Aqf::where('question_id', '=', $question->id)
-        //                         ->where('form_id', '=', $form)->first();
-        //             if ($aqf) {
-        //                 $aqf->delete();
-        //                 $this->newOqf($question->id, $request->input('options'), $form);
-        //             } else {
-        //                 $x = $this->change_options($question->id, $request->input('options'), $form);
-        //                 if ($x == 2) {
-        //                     return redirect('/edit-question/' . $question->id)->with('data', '3');
-        //                 }
-        //             }
-
-        //         // verificar a oqf table com o withTrashed
-        //         // if deleted_at == null
-        //         // adiciona um novo oqf
-        //         // se não
-        //         // restore na linha
-
-
-        //         break;
-        //         case 3:
-        //             if($request->input('options') != "") {
-        //                 return redirect('/edit-question/' . $id)->with('data', '1');
-        //             }
-        //             // se a questão for modificada para discursiva, excluir a primary key da tabela oqf e adicionar na tabela aqf FEITO
-        //             $oqfs = Oqf::where('question_id', '=', $question->id)->get();
-        //             foreach($oqfs as $oqf) {
-        //                 $oqf->where('option_id', '=', $oqf->option_id)
-        //                 ->where('question_id', '=', $oqf->question_id)
-        //                 ->where('form_id', '=', $oqf->form_id)
-        //                 ->delete();
-        //             }
-
-        //             $aqf = new Aqf();
-        //             $aqf->question_id = $id;
-        //             $aqf->form_id = $form;
-        //             $aqf->save();
-
-        //         break;
-        //     }
-        //     $question->type = $request->input('type');
-
-        // }
-        // $question->save();
-        // return redirect('/show-form/' . $form);
-
-
 
     // função auxiliar para organizar array por ordem id
     function cmp($a, $b) {
@@ -299,60 +229,6 @@ class QuestionController extends Controller
         return 0;
         }
         return ($a < $b) ? -1 : 1;
-    }
-
-    function change_options($question_id, $request_options, $form_id) {
-        $options_id = [];
-        $i = 0;
-        // descobrir o id das opções que serão editadas
-        $oqfs = Oqf::where('question_id', '=', $question_id)->get();
-        foreach ($oqfs as $oqf) {
-            $options_id[$i] = $oqf->option_id; // salvar os ids num array
-            $i++;
-        }
-
-        // \Log::info($options_id);
-
-        $options = explode(",", $request_options);
-        $j = 0;
-        foreach ($options as $option => $value) {
-            $slug = $this->criar_slug($value);
-            $optionExists = Option::where('slug', '=', $slug)->first();
-            if( $optionExists == "") {
-                $option = new Option();
-                $option->name = trim($value);
-                $option->slug = $slug;
-                $option->save();
-
-                $oqf = new Oqf();
-                $oqf->option_id = $option->id;
-                $oqf->form_id = $form_id;
-                $oqf->question_id = $question_id;
-                $oqf->save();
-            } else {
-                // verificando se a primary key da questão já existe
-                $primaryOqf = Oqf::where('question_id', '=', $question_id)
-                            ->where('option_id', '=', $optionExists->id)
-                            ->first();
-
-                if($primaryOqf == "") {
-                    $option = Option::find($options_id[$j]); // encontrar as options
-                    $option->name = trim($value);
-                    $option->slug = $slug;
-                    $option->save();
-                    // se a opção for modificada, na tabela oqf mudar o amount para 0
-                    // ARRUMAR, AQUI CRIA-SE UM NOVO OQF POIS ELA NÃO EXISTE
-                    $oqf = Oqf::where('option_id', '=', $option->id)->first();
-                    $oqf->amount_question = 0;
-                    $oqf->save();
-
-                 } else {
-
-                 }
-            }
-            $j++;
-        }
-        return 1;
     }
 
     // pegar o form_id
@@ -367,41 +243,58 @@ class QuestionController extends Controller
         return $form_id;
     }
 
-    function newOqf($id, $request_options, $form_id) {
-        $options = explode(",", $request_options);
-        foreach ($options as $option => $value) {
-            $slug = $this->criar_slug($value);
-            $optionExists = Option::where('slug', '=', $slug)->first();
-            if( $optionExists == "") {
-                $option = new Option();
-                $option->name = trim($value);
-                $option->slug = $slug;
-                $option->save();
+    function changeOQF ($questionID, $requestOPTIONS, $formID) {
+        // POSSIVEIS SITUAÇÕES DE MODIFICAÇÕES EM OPÇÕES
+        // ALTERAR SOMENTE OS VALORES DAS OPÇÕES
+        // ALTERAR O NÚMERO DAS OPÇÕES: DIMINUIR OU AUMENTAR
+        // ALTERAR O NÚMERO DAS OPÇÕES E OS VALORES
+        // OPÇÕES QUE JÁ EXISTEM E NOVAS OPÇÕES
 
-                $oqf = new Oqf();
-                $oqf->option_id = $option->id;
-                $oqf->form_id = $form_id;
-                $oqf->question_id = $id;
-                $oqf->save();
-            } else {
-                // verificando se a primary key da questão já existe
-                $primaryOqf = Oqf::where('question_id', '=', $id)
-                            ->where('option_id', '=', $optionExists->id)
-                            ->first();
-
-                if($primaryOqf == "") {
-                    $oqf = new Oqf();
-                    $oqf->option_id = $optionExists->id;
-                    $oqf->form_id = $form_id;
-                    $oqf->question_id = $id;
-                    $oqf->save();
-
-                 } else {
-                    return 2;
-                 }
+        // sempre que o usuário utilizar o update, apagar as oqf da tabela e criar novas
+        // isto soluciona o problema de alteração no número das questões e da possibilidade de
+        if($requestOPTIONS != "") {
+            $oqfs = Oqf::where('question_id', '=', $questionID)->delete();
+            $options = explode( ",", $requestOPTIONS ); // armazenando as opções em um objeto
+            foreach ($options as $option => $value) {
+                if ($value != "") {
+                    $slug = $this->criar_slug($value); // criando o slug da option
+                    $optionExists = Option::where('slug', '=', $slug)->first(); // verificando se esta option já existe na tabela Options
+                    if ($optionExists != "") {
+                        // verificiar se a primary key da oqf que será criada já existe
+                        $oqfExists = Oqf::where('option_id', '=', $optionExists->id)
+                                        ->where('question_id', '=', $questionID)
+                                        ->where('form_id', '=', $formID)->first();
+                        if ($oqfExists != "") {
+                            // return redirect('/edit-question/' . $questionID)->with('data_3', '3');
+                            return 3;
+                        } else {
+                            // criando a nova oqf
+                            $oqf = new Oqf();
+                            $oqf->option_id = $optionExists->id;
+                            $oqf->question_id = $questionID;
+                            $oqf->form_id = $formID;
+                            $oqf->save();
+                        }
+                    } else {
+                        // criando a nova option
+                        $newOption = new Option();
+                        $newOption->name = ucfirst(trim($value));
+                        $newOption->slug = $slug;
+                        $newOption->save();
+                        // criando a nova oqf
+                        $oqf = new Oqf();
+                        $oqf->option_id = $newOption->id;
+                        $oqf->question_id = $questionID;
+                        $oqf->form_id = $formID;
+                        $oqf->save();
+                    }
+                }
             }
+        } else {
+            // return redirect('/edit-question/' . $questionID)->with('data', '1');
+            return 1;
         }
-        return 1;
+        return 0;
+        // return redirect('/show-form/' . $formID);
     }
-
 }

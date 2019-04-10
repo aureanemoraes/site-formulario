@@ -18,6 +18,7 @@ class CreateQuestionsTable extends Migration
             $table->string('name');
             $table->integer('amount')->default(0);
             $table->integer('type')->default(0);
+            $table->boolean('required')->default(false);
             $table->text('description')->nullable();
             $table->timestamps();
         });

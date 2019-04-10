@@ -33,12 +33,12 @@ class OptionsSeeder extends Seeder
 
         DB::table('options')->insert([
             'name' => 'Visual Studio Code',
-            'slug' => 'visualstudiocode'
+            'slug' => 'visual-studio-code'
         ]);
 
         DB::table('options')->insert([
             'name' => 'sublime text',
-            'slug' => 'sublimetext'
+            'slug' => 'sublime-text'
         ]);
     }
 }

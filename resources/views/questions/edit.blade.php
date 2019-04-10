@@ -5,18 +5,24 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Editar</div>
+                <div class="card-header">
+                    Editar
+                    <div class="float-sm-right">
+                            <a href="#" class="btn btn-sm btn-secondary">Voltar</a>
+                    </div>
+
+                </div>
                 <div class="card-body">
                     @if ( session()->has('data') == '1' )
                         <div class="alert alert-danger" role="alert">
                             Campo <strong>opções</strong> vazio. Por favor, para utilizar questões discursivas mude o tipo da sua questão para <strong>DISCURSIVA</strong>.
                         </div>
-                    @elseif (session()->has('data') == '2')
+                    @elseif (session()->has('data_2') == '2')
                         <div class="alert alert-danger" role="alert">
                             Campo <strong>Opções</strong> preenchido. Por favor, para utilizar opções mude o tipo da sua questão para <strong>Resposta Única</strong>
                             ou <strong>Múltiplas Respostas</strong>.
                         </div>
-                    @elseif(session()->has('data2') == '3')
+                    @elseif(session()->has('data_3') == '3')
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <strong>Opções iguais!</strong> Você adicionou uma questão com duas ou mais opções idênticas. Por favor, edite suas opções. {{session('data.id')}}
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -47,11 +53,12 @@
                         @endforeach
                         <div class="form-group">
                             <label for="options">Opcões</label>
-                            <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" value="{{$op}}">
-                            <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
                             <div class="alert alert-warning" role="alert">
                                 Se esta for uma questão <strong>discursiva</strong>. Deixar este campo em branco!
                             </div>
+                            <input type="text" class="form-control" name="options" id="options" aria-describedby="optionsHelp" value="{{$op}}">
+                            <small id="optionsHelp" class="form-text text-muted">Opções devem ser separadas por vírgula. (Ex.: Morango, Maçã, Banana)</small>
+
                         </div>
 
                         {{-- Mudar tipo da questão --}}
@@ -75,12 +82,21 @@
                         </div>
                         <input name="_method" type="hidden" value="PUT">
                         {{--- Verificando se a questão é obrigatória --}}
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="required" value=1>
-                            <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
-                        </div>
+                        @if($question->required == 0)
+                            <div class="form-check">
+                                <input name="required" class="form-check-input" type="checkbox" id="required" value=1 >
+                                <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
+                            </div>
+                        @else
+                            <div class="form-check">
+                                <input name="required" class="form-check-input" type="checkbox" id="required" value=1 checked>
+                                <label class="form-check-label" for="required">Esta questão é obrigatória.</label>
+                            </div>
+                        @endif
+
                         <br>
                         <button type="submit" class="btn btn-primary">Salvar</button>
+
                     </form>
                 </div>
             </div>

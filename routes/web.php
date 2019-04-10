@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group( function() {
     Route::get('/show-question/{id}', 'QuestionController@show');
     Route::get('/edit-question/{id}', 'QuestionController@edit');
     Route::put('/edit-question/{id}', 'QuestionController@update');
+    Route::get('/delete-question/{id}', 'QuestionController@destroy');
 
     // graphic
     Route::get('/show-graphic/{id}', 'GraphicController@show');
