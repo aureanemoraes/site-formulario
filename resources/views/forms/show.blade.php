@@ -53,7 +53,7 @@
                                 <td>
                                     <div class="btn-group">
                                     <a href="{{'/edit-question/' . $question->id}}" class="btn btn-sm btn-warning">Editar</a>
-                                    <a href="{{'/show-graphic/question/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
+                                    <a href="{{'/show-graphic/question/' . $form->id . '/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
                                     <a href="{{'/delete-question/' . $form->id . '/' . $question->id }}" class="btn btn-sm btn-danger">Excluir</a>
                                     </div>
                                 </td>

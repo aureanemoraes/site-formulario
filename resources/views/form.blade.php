@@ -28,10 +28,10 @@
                                 <div class="form-group" >
                                     @if($question->type == 3)
                                         @if($question->required == 1)
-                                            <textarea class="form-control" id="{{$question->id}}" name="{{$question->id}}" rows="3" required>{{$question->id}}</textarea>
+                                            <textarea class="form-control" id="{{$question->id}}" name="{{$question->id}}" rows="3" required></textarea>
                                             <input name="{{'type_' . $question->id}}" type="hidden" value=3>
                                         @else
-                                            <textarea class="form-control" id="{{$question->id}}" name="{{$question->id}}" rows="3">{{$question->id}}</textarea>
+                                            <textarea class="form-control" id="{{$question->id}}" name="{{$question->id}}" rows="3"></textarea>
                                             <input name="{{'type_' . $question->id}}" type="hidden" value=3>
                                         @endif
                                     @elseif($question->type == 1)
@@ -42,14 +42,14 @@
                                                         <div class="custom-control custom-radio">
                                                             <input class="custom-control-input" id="{{$question->id . '-' . $option->id}}" type="radio" name="{{$question->id}}" value="{{$option->id}}" required>
                                                             <label class="custom-control-label" for="{{$question->id . '-' . $option->id}}">
-                                                                {{$option->name}} {{$question->id . '-' . $option->id}}
+                                                                {{$option->name}}
                                                             </label>
                                                         </div>
                                                     @else
                                                         <div class="custom-control custom-radio">
                                                             <input class="custom-control-input" id="{{$question->id . '-' . $option->id}}" type="radio" name="{{$question->id}}" value="{{$option->id}}" >
                                                             <label class="custom-control-label" for="{{$question->id . '-' . $option->id}}">
-                                                                {{$option->name}} {{$question->id . '-' . $option->id}}
+                                                                {{$option->name}}
                                                             </label>
                                                         </div>
                                                     @endif

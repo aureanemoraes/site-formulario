@@ -57,7 +57,7 @@ class GraphicController extends Controller
                 }
                     $piechart = \Lava::PieChart($q->name, $graphic[$i], [
                         'title' => $q->name,
-                        'is3D' => false,
+                        'is3D' => true,
                         'pieSliceText' => 'percentage',
                         'width' => '100%',
                         'height' => '100%'
@@ -89,23 +89,50 @@ class GraphicController extends Controller
         return view('graphics.show', compact('questions', 'form'));
     }
 
-    public function show_question($id) {
+    public function show_question($fid, $qid) {
+        $form = Form::withTrashed()->find($fid);
+        $question = Question::find($qid);
+        if($question->type != 3) {
+            $oqfs = Oqf::where('question_id', '=', $qid)
+                        ->where('form_id', '=', $fid)->get();
+            $graphic = \Lava::DataTable();
+            $graphic->addStringColumn('Opções')
+                    ->addNumberColumn('Porcentagem');
+            foreach($oqfs as $oqf) {
+                $option = Option::find($oqf->option_id);
+                if($option->id == $oqf->option_id) {
+                    $graphic->addRow([$option->name, $oqf->amount_question]);
+                }
 
-        $question = Question::find($id);
-        $ops = Option::all();
-        $options = \Lava::DataTable();
-        $options->addStringColumn('Opções')
-                ->addNumberColumn('Porcentagem');
-
-        foreach($ops as $op) {
-            if( $op->question_id == $id) {
-                $options->addRow([$op->name, $op->amount]);
             }
+
+            $piechart = \Lava::PieChart($question->name, $graphic, [
+                'title' => $question->name,
+                'is3D' => true
+            ]);
+        } else {
+            $aqfs = Aqf::where('question_id', '=', $qid)
+                        ->where('form_id', '=', $fid)->get();
+            $graphic = \Lava::DataTable();
+            $graphic->addStringColumn('Opções')
+                    ->addNumberColumn('Porcentagem');
+            foreach($aqfs as $aqf) {
+
+                    $notAnswered = $form->amount - $aqf->amount_question;
+                    $graphic->addRow(['Respondido', $aqf->amount_question]);
+                    $graphic->addRow(['Não respondido', $notAnswered]);
+
+
+            }
+            $piechart = \Lava::PieChart($question->name, $graphic, [
+                'title' => $question->name,
+                'is3D' => true
+            ]);
+
         }
-        $piechart = \Lava::PieChart($question->name, $options, [
-            'title' => 'Questões respondidas',
-            'is3D' => true
-        ]);
+
+
+
         return view('questions.show', compact('question', 'piechart'));
     }
 

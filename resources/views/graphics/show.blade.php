@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-body">
                     <h3>Relatório</h3>
-                    <p>Total: {{$form->amount}}</p>
+                    <p>Finalizado: {{$form->amount}} vezes.</p>
                     @if(isset($questions))
                         @php ($i = 0)
                         @php ($name = "chart-div")
