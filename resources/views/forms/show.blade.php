@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@php($i = 1)
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -22,7 +23,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th scope="col">Código</th>
+                                <th scope="col">Índice</th>
                                 <th scope="col">Perguntas</th>
                                 <th scope="col">Respostas</th>
                                 <th scope="col">Ações</th>
@@ -32,7 +33,7 @@
                             @if(isset($questions) && isset($options) && isset($oqfs))
                                 @foreach($questions as $question)
                                 <tr scope="row">
-                                        <td>{{$question->id}}</td>
+                                        <td>{{$i}}</td>
                                         <td>{{$question->name}}</td>
                                         <td>
                                     @if($question->type == 3)
@@ -53,13 +54,13 @@
                                     <div class="btn-group">
                                     <a href="{{'/edit-question/' . $question->id}}" class="btn btn-sm btn-warning">Editar</a>
                                     <a href="{{'/show-graphic/question/' . $question->id }}" class="btn btn-sm btn-dark">Gráficos</a>
-                                    <a href="{{'/delete-question/' . $question->id }}" class="btn btn-sm btn-danger">Excluir</a>
+                                    <a href="{{'/delete-question/' . $form->id . '/' . $question->id }}" class="btn btn-sm btn-danger">Excluir</a>
                                     </div>
                                 </td>
                                 </tr>
+                                @php($i++)
                                 @endforeach
                         </tbody>
-
                     @else
                         <p>Este formulário não possui questões adicionadas.</p>
                     @endif

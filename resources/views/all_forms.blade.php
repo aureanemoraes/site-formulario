@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+@php($i=1)
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 ">
@@ -36,7 +36,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                            <th scope="col">Código</th>
+                            <th scope="col">Índice</th>
                             <th scope="col">Título</th>
                             <th scope="col">Ações</th>
                             </tr>
@@ -46,22 +46,25 @@
                         @if(isset($allForms))
                             @foreach ($allForms as $form)
                             <tr>
-                                <td>{{$form->id}}</td>
+                                <td>{{$i}}</td>
                                 <td>{{ ucfirst($form->name) }}</td>
                                 <td>
-                                    <div class="btn-group">
-                                        <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-info">Ver</a>
-                                        <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
-                                        <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
-                                    </div>
+
                                     @if($form->deleted_at != "")
+                                        <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
                                         <a href="{{'/active-form/' . $form->id}}" class="btn btn-sm btn-success">Ativar</a>
                                     @else
+                                        <div class="btn-group">
+                                            <a href="{{'/show-form/' . $form->id}}" class="btn btn-sm btn-info">Ver</a>
+                                            <a href="{{'/edit-form/' . $form->id}}" class="btn btn-sm btn-warning">Editar</a>
+                                            <a href="{{'/show-graphic/' . $form->id}}" class="btn btn-sm btn-dark">Gráficos</a>
+                                        </div>
                                         <a href="{{'/delete-form/' . $form->id}}" class="btn btn-sm btn-danger">Desativar</a>
                                     @endif
 
                                 </td>
                             </tr>
+                            @php($i++)
                             @endforeach
                         @else
                         <h5>Nenhum formulário adicionado.</h5>

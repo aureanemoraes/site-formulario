@@ -78,14 +78,28 @@ class QuestionController extends Controller
         return redirect('/show-form/' . $request->input('form_id'));
     }
 
-    public function destroy($id)
+    public function destroy($fid, $qid)
     {
-        $question = Question::find($id);
+        $question = Question::find($qid);
         if($question->type != 3) {
-            $aqf = Aqf::where('question_id');
+            $oqfs = Oqf::where('question_id', '=', $qid)
+                        ->where('form_id', '=', $fid)->get();
+            foreach($oqfs as $oqf) {
+                $oqf->delete();
+            }
         } else {
-
+            $aqf = Aqf::where('question_id', '=', $qid)
+                        ->where('form_id', '=', $fid)->first();
+            $aqf->delete();
+            $answers = Answer::where('question_id', '=', $qid)
+                                ->where('form_id', '=', $fid)->get();
+            if($answers != "") {
+                foreach($answers as $answer) {
+                    $answer->delete();
+                }
+            }
         }
+        $question->delete();
         return back();
     }
 

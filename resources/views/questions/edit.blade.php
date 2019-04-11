@@ -7,10 +7,6 @@
             <div class="card">
                 <div class="card-header">
                     Editar
-                    <div class="float-sm-right">
-                            <a href="#" class="btn btn-sm btn-secondary">Voltar</a>
-                    </div>
-
                 </div>
                 <div class="card-body">
                     @if ( session()->has('data') == '1' )
@@ -39,7 +35,7 @@
 
                         <div class="form-group">
                             <label for="description">Descrição</label>
-                            <input type="text" class="form-control" name="description" value="" id="description">
+                            <input type="text" class="form-control" name="description" value="{{$question->description}}" id="description">
                         </div>
                         @php($op = "")
                         @php($first = true)
@@ -96,7 +92,6 @@
 
                         <br>
                         <button type="submit" class="btn btn-primary">Salvar</button>
-
                     </form>
                 </div>
             </div>

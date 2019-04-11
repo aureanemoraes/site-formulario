@@ -66,22 +66,57 @@ class FormController extends Controller
         $aqfs = Aqf::where('form_id', '=', $request->input('form_id'))->get();
         foreach ($oqfs as $oqf) {
             if($request->input($oqf->question_id)) {
-                if ($request->input('type_' . $oqf->question_id)) {
-
-
+                if ($request->input('type_' . $oqf->question_id) == 1) {
                     $option = Option::find($request->input($oqf->question_id));
                     $option->amount++;
                     $option->save();
                     if($oqf->option_id == $request->input($oqf->question_id)) {
                         $oqf->amount_question++; // adiciona +1 na quantidade de resposta dessa questão nesse formulário
                         $oqf->save();
+                        $question = Question::find($oqf->question_id);
+                        $question->amount++;
+                        $question->save();
                     }
-                    $question = Question::find($oqf->question_id);
-                    $question->amount++;
-                    $question->save();
+
                 }
             }
+
+            if($request->input($oqf->question_id . '-' . $oqf->option_id)) {
+                $x = $request->input($oqf->question_id . '-' . $oqf->option_id);
+                $option = Option::find($x);
+                $option->amount++;
+                $option->save();
+                if($oqf->option_id == $x) {
+                    $oqf->amount_question++; // adiciona +1 na quantidade de resposta dessa questão nesse formulário
+                    $oqf->save();
+                }
+                $question = Question::find($oqf->question_id);
+                $question->amount++;
+                $question->save();
+            }
+
+            // if($request->input('type_' . $oqf->question_id == 2)) {
+            //     $options = Oqf::where('question_id', '=', $oqf->question_id)
+            //                     ->where('form_id', '=', $request->input('form_id'))->get();
+            //     foreach ($options as $op) {
+            //         if($request->input($oqf->question_id . '-' . $op->option_id)) {
+            //             $x = $request->input($oqf->question_id . '-' . $op->option_id);
+            //             $option = Option::find($x);
+            //             $option->amount++;
+            //             $option->save();
+            //             if($op->option_id == $option->id) {
+            //                 $op->amount_question++; // adiciona +1 na quantidade de resposta dessa questão nesse formulário
+            //                 $op->save();
+            //             }
+
+            //             $question = Question::find($oqf->question_id);
+            //             $question->amount++;
+            //             $question->save();
+            //         }
+            //     }
+            // }
         }
+
 
         foreach ($aqfs as $aqf) {
             if($request->input($aqf->question_id)) {

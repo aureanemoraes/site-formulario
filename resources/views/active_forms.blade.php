@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+@php($i = 1)
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-3 ">
@@ -36,7 +36,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                            <th scope="col">Código</th>
+                            <th scope="col">Índice</th>
                             <th scope="col">Título</th>
                             <th scope="col">Ações</th>
                             </tr>
@@ -46,7 +46,7 @@
                         @if(isset($forms))
                             @foreach ($forms as $form)
                             <tr>
-                                <td>{{$form->id}}</td>
+                                <td>{{$i}}</td>
                                 <td>{{ ucfirst($form->name) }}</td>
                                 <td>
                                     <div class="btn-group">
@@ -62,6 +62,7 @@
 
                                 </td>
                             </tr>
+                            @php($i++)
                             @endforeach
                         @else
                         <h5>Nenhum formulário adicionado.</h5>

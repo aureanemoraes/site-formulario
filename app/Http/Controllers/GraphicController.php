@@ -18,7 +18,7 @@ class GraphicController extends Controller
     {
         // $actualQuestionStart = 0;
         // $actualQuestionEnd = 0;
-        $form = Form::find($id);
+        $form = Form::withTrashed()->find($id);
         $i= 0;
         $oqfs = Oqf::where('form_id', '=', $id)->get(); // buscando todas as oqf do formulário
         $aqfs = Aqf::where('form_id', '=', $id)->get(); // buscando todas as aqf do formulário
@@ -59,7 +59,8 @@ class GraphicController extends Controller
                         'title' => $q->name,
                         'is3D' => false,
                         'pieSliceText' => 'percentage',
-                        'width' => '500'
+                        'width' => '100%',
+                        'height' => '100%'
                 ]);
                 $i++;
             } else {
@@ -68,78 +69,24 @@ class GraphicController extends Controller
                         ->addNumberColumn('Porcentagem');
                 foreach($aqfs as $aqf ) {
                         $notAnswered = $form->amount - $aqf->amount_question;
-                        $graphic[$i]->addRow(['Respondido', $aqf->amount_question]);
-                        $graphic[$i]->addRow(['Não respondido', $notAnswered]);
+                        $graphic[$i]->addRow(['Respondido (' . $aqf->amount_question .')', $aqf->amount_question]);
+                        $graphic[$i]->addRow(['Não respondido (' . $notAnswered . ')', $notAnswered]);
 
 
                 }
                     $piechart = \Lava::PieChart($q->name, $graphic[$i], [
                         'title' => $q->name,
-                        'is3D' => false,
-                        'pieSliceText' => 'value',
-                        'width' => '500'
+                        'is3D' => true,
+                        'pieSliceText' => 'percent',
+                        'width' => '100%',
+                        'height' => '100%'
                 ]);
                 $i++;
             }
 
         }
 
-
-
-
-
-        // if($oqfs != "") {
-        //     foreach($oqfs as $oqf) {
-        //         $question = $oqf->question_id; // 2
-        //         if($actualQuestionStart != $question) { // 1  2
-        //             $actualQuestionStart = $question; // 2
-        //             $graphic[$i] = \Lava::DataTable();
-        //             $graphic[$i]->addStringColumn('Opções')
-        //                         ->addNumberColumn('Porcentagem');
-        //         }
-        //         $option = Option::find($oqf->option_id);
-        //         $graphic[$i]->addRow([$option->name, $oqf->amount_question]);
-
-        //         if($actualQuestionEnd != $question) {
-        //             $actualQuestionEnd = $question;
-        //             $question = Question::find($oqf->question_id);
-        //             $questionss[$i] = $question;
-        //             $piechart = \Lava::PieChart($question->name, $graphic[$i], [
-        //                 'title' => $question->name,
-        //                 'is3D' => true
-        //             ]);
-        //             $i++;
-        //         }
-        //             // do {
-
-        //             // }while($actualQuestion != $oqf->question_id); // 1 //2
-        //     }
-        //     $questions = (object)$questionss;
-        // }
-        //$options = (object)$options;
-
-
-        // $question = Question::where('form_id', '=', $id)->get();
-        // $opts = Option::all();
-        // $i=0;
-
-
-        // foreach($question as $q) {
-        //     $options[$i] = \Lava::DataTable();
-        //     $options[$i]->addStringColumn('Opções')
-        //             ->addNumberColumn('Porcentagem');
-        //     foreach($opts as $o ) {
-        //         if($o->question_id == $q->id) {
-        //             $options[$i]->addRow([$o->name, $o->amount]);
-        //         }
-        //     }
-        //         $piechart = \Lava::PieChart($q->name, $options[$i], [
-        //             'title' => $q->name,
-        //             'is3D' => true
-        //     ]);
-        //     $i++;
-        // }
-        return view('graphics.show', compact('questions'));
+        return view('graphics.show', compact('questions', 'form'));
     }
 
     public function show_question($id) {

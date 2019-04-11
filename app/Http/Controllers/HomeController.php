@@ -25,14 +25,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $allForms = Form::withTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $allForms = Form::withTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','asc')->get();
         $countAllForms = count($allForms);
 
-        $trashedForms = Form::onlyTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $trashedForms = Form::onlyTrashed()->where('user_id','=',Auth::user()->id)->orderBy('created_at','asc')->get();
         $countTrashedForms = count($trashedForms);
 
-        $forms = Form::where('user_id','=',Auth::user()->id)->orderBy('created_at','desc')->get();
+        $forms = Form::where('user_id','=',Auth::user()->id)->orderBy('created_at','asc')->get();
         $countForms = count($forms);
+
         return view('active_forms', compact('forms', 'countForms',
                                             'allForms', 'countAllForms',
                                             'trashedForms', 'countTrashedForms'));
